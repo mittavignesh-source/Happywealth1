@@ -1,0 +1,1930 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>HappyWealth: goal-based mutual fund planning</title>
+<meta name="description" content="HappyWealth helps individuals and families set clear financial goals and reach them through disciplined, monitored mutual fund investing. AMFI Registered Mutual Fund Distributor, ARN-349762.">
+<meta name="theme-color" content="#FBFCFB">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{
+  --paper:#FBFCFB; --mist:#F0F4F2; --ink:#13302A; --muted:#5B6B66; --soft:#8A9994;
+  --teal:#0E7C66; --teal-2:#1A9A7F; --mint:#BFE3D9; --marigold:#F5A524; --red:#E5484D;
+  --line:#DDE5E2; --black:#000;
+  --r-s:12px; --r-m:20px; --r-l:32px;
+  --max:1160px;
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth;scroll-padding-top:110px}
+body{margin:0;background:var(--paper);color:var(--ink);font:400 17px/1.6 Poppins,system-ui,sans-serif;-webkit-font-smoothing:antialiased}
+img{max-width:100%;display:block}
+a{color:inherit}
+h1,h2,h3{margin:0;font-weight:600;letter-spacing:-.025em;line-height:1.05}
+h1{font-size:clamp(46px,7.4vw,104px)}
+h2{font-size:clamp(36px,5vw,68px)}
+h3{font-size:22px;letter-spacing:-.01em;line-height:1.25}
+p{margin:0}
+.wrap{max-width:var(--max);margin:0 auto;padding:0 24px}
+.lede{font-size:clamp(18px,1.6vw,21px);color:var(--muted);max-width:40ch}
+section{padding:140px 0}
+.center{text-align:center}
+.center .lede{margin-left:auto;margin-right:auto}
+:focus-visible{outline:3px solid var(--teal);outline-offset:3px;border-radius:6px}
+
+.btn{display:inline-flex;align-items:center;gap:10px;font:500 17px Poppins,sans-serif;text-decoration:none;border-radius:999px;
+  padding:15px 28px;border:0;cursor:pointer;transition:transform .15s ease,background .15s ease}
+.btn:active{transform:scale(.97)}
+.btn-dark{background:var(--ink);color:#fff}
+.btn-dark:hover{background:#000}
+.btn-ghost{background:#fff;color:var(--ink);box-shadow:inset 0 0 0 1.5px var(--line)}
+.btn-ghost:hover{box-shadow:inset 0 0 0 1.5px var(--ink)}
+.btns{display:flex;gap:12px;flex-wrap:wrap}
+.center .btns{justify-content:center}
+.fine{font-size:14px;color:var(--soft)}
+
+/* ---------- top bar & notch ---------- */
+.bar{position:fixed;inset:0 0 auto 0;z-index:50;height:72px;display:flex;align-items:center;
+  background:rgba(251,252,251,.82);backdrop-filter:saturate(1.4) blur(14px);-webkit-backdrop-filter:saturate(1.4) blur(14px);
+  border-bottom:1px solid transparent;transition:border-color .2s}
+.bar.scrolled{border-color:var(--line)}
+.bar .wrap{width:100%;display:flex;align-items:center;justify-content:space-between;max-width:1320px}
+.brand{display:flex;align-items:center;gap:10px;font-weight:600;font-size:20px;text-decoration:none;letter-spacing:-.02em}
+.brand svg.logo{height:40px;width:auto;display:block}
+@media (max-width:560px){.brand svg.logo{height:32px}}
+.left{display:flex;align-items:center;gap:34px}
+.nav{display:flex;gap:22px;font-size:15px}
+.bar-right .btn{white-space:nowrap}
+.nav a{text-decoration:none;color:var(--muted)} .nav a:hover{color:var(--ink)}
+.bar-right{display:flex;gap:10px;align-items:center}
+.bar-right .btn{padding:10px 18px;font-size:15px}
+
+.notch{position:fixed;top:12px;left:50%;transform:translate(-50%,-90px);opacity:0;pointer-events:none;z-index:60;background:var(--black);color:#fff;
+  border-radius:24px;height:48px;width:250px;overflow:hidden;cursor:default;
+  transition:transform .5s cubic-bezier(.3,1.4,.5,1),opacity .3s,width .45s cubic-bezier(.3,1.3,.5,1),height .45s cubic-bezier(.3,1.3,.5,1),border-radius .45s}
+.notch.show{transform:translate(-50%,0);opacity:1;pointer-events:auto}
+.notch .row{display:flex;align-items:center;gap:12px;height:48px;padding:0 18px 0 14px;white-space:nowrap}
+.notch .dot{width:10px;height:10px;border-radius:50%;background:var(--marigold);flex:none;transition:background .3s}
+.notch .lbl{font-size:14px;color:#A9B5B1;flex:1;overflow:hidden;text-overflow:ellipsis}
+.notch .val{font-size:14px;font-weight:600}
+.notch .swap{transition:opacity .2s}
+.notch .panel{padding:4px 16px 16px;display:grid;grid-template-columns:repeat(2,1fr);gap:8px;opacity:0;transition:opacity .2s}
+.notch .tile{background:#161A19;border-radius:14px;padding:12px 14px;text-decoration:none;color:#fff}
+.notch .tile:hover{background:#22302C}
+.notch .tile b{display:block;font-size:13px;font-weight:500;color:#A9B5B1}
+.notch .tile span{font-size:17px;font-weight:600}
+.notch.open{width:420px;height:224px;border-radius:30px}
+.notch.open .panel{opacity:1;transition-delay:.15s}
+.notch.wide{width:340px}
+@media (max-width:1240px){ .nav{display:none} }
+@media (max-width:560px){ .bar-right .btn-ghost{display:none} .brand{font-size:18px} }
+@media (max-width:900px){ .notch{top:82px;height:42px;width:230px} .notch .row{height:42px} .notch .lbl,.notch .val{font-size:13px} .notch.open{width:min(92vw,400px);height:210px} }
+
+/* ---------- hero ---------- */
+.hero{padding:170px 0 80px;text-align:center;overflow:hidden}
+.hero .sprout{width:120px;height:150px;margin:0 auto 26px;animation:drop 1.1s cubic-bezier(.3,1.5,.5,1) .2s both}
+@keyframes drop{from{transform:translateY(-190px) scale(.35);opacity:0}to{transform:none;opacity:1}}
+.hero h1{max-width:15ch;margin:0 auto 26px}
+.hero .lede{margin:0 auto 36px;max-width:46ch}
+.hero .fine{margin-top:22px}
+.hero .btns{justify-content:center}
+@media (max-width:560px){.hero{padding-top:120px}}
+
+.board-intro{max-width:760px;margin:120px auto 0;text-align:center}
+.board-intro h2{font-size:clamp(34px,4.4vw,56px)}
+.board-intro p{color:var(--muted);font-size:clamp(17px,1.5vw,20px);margin:16px auto 0;max-width:52ch}
+.how3{list-style:none;margin:28px 0 0;padding:0;display:flex;justify-content:center;flex-wrap:wrap;gap:10px}
+.how3 li{display:flex;align-items:center;gap:10px;background:#fff;border-radius:999px;padding:8px 18px 8px 8px;font-size:15px;font-weight:500;
+  box-shadow:0 0 0 1px var(--line)}
+.how3 span{width:28px;height:28px;border-radius:50%;background:var(--ink);color:#fff;display:grid;place-items:center;font-size:13px;font-weight:600}
+.board{max-width:1100px;margin:44px auto 0;background:#fff;border-radius:36px;text-align:left;overflow:hidden;
+  box-shadow:0 0 0 1px var(--line),0 50px 100px -50px rgba(19,48,42,.35),0 20px 40px -30px rgba(19,48,42,.2)}
+.board-head{display:flex;justify-content:space-between;align-items:center;gap:20px;padding:22px 28px;border-bottom:1px solid var(--line)}
+.bh-l{display:flex;align-items:center;gap:14px}
+.bh-ic{width:40px;height:52px;flex:none}
+.bh-t{font-size:20px;font-weight:600;letter-spacing:-.01em}
+.bh-s{font-size:14px;color:var(--muted);display:flex;align-items:center;gap:8px}
+.bh-s i{width:8px;height:8px;border-radius:50%;background:var(--teal);box-shadow:0 0 0 4px rgba(14,124,102,.15)}
+.bh-stats{display:flex;align-items:center;gap:30px}
+.bh-stats span{display:block;font-size:13px;color:var(--muted)}
+.bh-stats b{font-size:20px;font-weight:600;letter-spacing:-.01em}
+.ring{position:relative}
+.ring em{position:absolute;inset:0;display:grid;place-items:center;font-style:normal;font-size:12px;font-weight:600;color:var(--ink)}
+.ring svg{width:50px;height:50px;display:block}
+#hw-ring{transition:stroke-dashoffset 1.6s cubic-bezier(.2,.8,.2,1)}
+.canvas{position:relative;height:400px;background-color:#F6F9F8;
+  background-image:radial-gradient(#D5DEDA 1.2px,transparent 1.3px);background-size:22px 22px}
+.goal{position:absolute;width:290px;background:#fff;border-radius:22px;padding:20px 22px 18px;transform:rotate(var(--r,0deg));
+  box-shadow:0 1px 0 var(--line),0 18px 40px -18px rgba(19,48,42,.28);cursor:grab;touch-action:none;user-select:none;
+  transition:transform .25s cubic-bezier(.3,1.4,.5,1),box-shadow .2s}
+.goal:hover{transform:rotate(var(--r,0deg)) translateY(-4px)}
+.goal.dragging{cursor:grabbing;transform:rotate(0deg) scale(1.04);box-shadow:0 1px 0 var(--line),0 34px 70px -24px rgba(19,48,42,.45);transition:box-shadow .2s}
+.goal .g-top{display:flex;justify-content:space-between;align-items:center}
+.goal .ico{font-size:28px;line-height:1}
+.goal .ok{font-size:12px;font-weight:500;color:var(--teal);background:#E3F1EC;border-radius:99px;padding:4px 10px}
+.goal h3{margin:12px 0 2px;font-size:19px}
+.goal .meta{font-size:14px;color:var(--muted)}
+.goal .track{height:10px;background:var(--mist);border-radius:99px;margin:16px 0 8px;overflow:hidden}
+.goal .fill{height:100%;background:linear-gradient(90deg,#1A9A7F,#0E7C66);border-radius:99px;width:0;transition:width 1.4s cubic-bezier(.2,.8,.2,1)}
+.goal .nums{display:flex;justify-content:space-between;font-size:14px}
+.goal .nums b{font-weight:600}
+.goal .sip{display:flex;justify-content:space-between;margin-top:14px;padding-top:12px;border-top:1px dashed var(--line);font-size:14px;color:var(--muted)}
+.goal .sip b{color:var(--ink);font-weight:600}
+.anno{position:absolute;left:calc(4% + 40px);top:318px;display:flex;align-items:flex-end;gap:2px;color:var(--muted);font-size:16px;font-weight:500;
+  pointer-events:none;transition:opacity .4s}
+.anno svg{transform:translateY(-34px) scaleX(-1)}
+.anno span{background:#fff;border-radius:999px;padding:8px 16px;box-shadow:0 0 0 1px var(--line),0 8px 20px -12px rgba(19,48,42,.3);animation:nudge 2.4s ease-in-out infinite}
+@keyframes nudge{50%{transform:translateY(-4px)}}
+.anno.gone{opacity:0}
+.board-foot{padding:14px 28px;font-size:13px;color:var(--soft);border-top:1px solid var(--line);text-align:center}
+@media (max-width:900px){
+  .board{border-radius:26px;margin-top:32px}
+  .board-intro{margin-top:80px;text-align:left}
+  .how3{justify-content:flex-start}
+  .board-head{flex-direction:column;align-items:flex-start;padding:18px 20px}
+  .bh-stats{width:100%;justify-content:space-between;gap:12px}
+  .canvas{height:auto;display:flex;gap:12px;padding:18px;overflow-x:auto;scroll-snap-type:x mandatory;scrollbar-width:none}
+  .canvas::-webkit-scrollbar{display:none}
+  .goal{position:relative;left:auto!important;top:auto!important;transform:none!important;flex:0 0 82%;width:auto;cursor:default;scroll-snap-align:center}
+  .board-foot::before{content:"Swipe to see all three goals. ";color:var(--muted)}
+  .anno{display:none}
+  .board-foot{padding:12px 20px}
+}
+
+/* ---------- highlights ---------- */
+.grid4{display:grid;grid-template-columns:repeat(4,1fr);gap:16px;margin-top:56px}
+.hl{background:var(--mist);border-radius:var(--r-m);padding:28px 24px 30px;min-height:240px;display:flex;flex-direction:column;justify-content:space-between}
+.hl .glyph{width:52px;height:52px;border-radius:16px;background:#fff;display:grid;place-items:center}
+.hl p{color:var(--muted);font-size:15px;margin-top:8px}
+@media (max-width:980px){.grid4{grid-template-columns:repeat(2,1fr)}}
+@media (max-width:560px){.grid4{grid-template-columns:1fr}.hl{min-height:0;gap:22px}}
+
+/* ---------- film ---------- */
+.film{background:var(--mist);padding:120px 0}
+.reel-head{display:flex;justify-content:space-between;align-items:flex-end;gap:24px}
+.arrows{display:flex;gap:10px;flex:none}
+.arr{width:56px;height:56px;border-radius:50%;border:0;background:#fff;color:var(--ink);display:grid;place-items:center;cursor:pointer;
+  box-shadow:inset 0 0 0 1.5px var(--line);transition:background .15s,color .15s}
+.arr:hover{background:var(--ink);color:#fff}
+.arr:disabled{opacity:.35;cursor:default;background:#fff;color:var(--ink)}
+.reel{--gut:max(24px,calc((100vw - var(--max))/2 + 24px));display:flex;gap:24px;overflow-x:auto;scroll-snap-type:x mandatory;
+  padding:48px var(--gut) 10px;scroll-padding-inline:var(--gut);scrollbar-width:none;overscroll-behavior-x:contain}
+.reel::-webkit-scrollbar{display:none}
+.fcard{flex:0 0 min(900px,84vw);scroll-snap-align:start;transition:opacity .35s}
+.fcard:not(.on){opacity:.55}
+.fscreen{position:relative;background:#fff;border-radius:var(--r-l);overflow:hidden;box-shadow:0 0 0 1.5px var(--line),0 40px 80px -44px rgba(19,48,42,.4)}
+.fscreen svg{display:block;width:100%;height:auto}
+.fplay{position:absolute;inset:0;width:100%;height:100%;background:transparent;border:0;cursor:pointer}
+.fplay::after{content:"";position:absolute;right:18px;bottom:18px;width:46px;height:46px;border-radius:50%;background:#fff;box-shadow:0 0 0 1.5px var(--line);
+  background-image:url("data:image/svg+xml,%3Csvg xmlns=%27http://www.w3.org/2000/svg%27 viewBox=%270 0 24 24%27%3E%3Cpath d=%27M9 7v10l8-5z%27 fill=%27%2313302A%27/%3E%3C/svg%3E");background-size:24px;background-repeat:no-repeat;background-position:center}
+.fcard.playing .fplay::after{background-image:url("data:image/svg+xml,%3Csvg xmlns=%27http://www.w3.org/2000/svg%27 viewBox=%270 0 24 24%27%3E%3Cpath d=%27M8 6h3v12H8zM13 6h3v12h-3z%27 fill=%27%2313302A%27/%3E%3C/svg%3E")}
+.fbar{height:4px;border-radius:4px;background:var(--line);margin:16px 8px 0;overflow:hidden}
+.fbar i{display:block;height:100%;width:0;background:var(--teal)}
+.fmeta{display:flex;justify-content:space-between;gap:16px;padding:14px 8px 0}
+.fmeta h3{font-size:22px} .fmeta p{font-size:15px;color:var(--muted);margin-top:2px}
+.fmeta span{font-size:15px;color:var(--soft);font-variant-numeric:tabular-nums}
+.dots{display:flex;justify-content:center;gap:8px;margin-top:30px}
+.dots button{width:10px;height:10px;border-radius:99px;border:0;background:#C9D6D1;padding:0;cursor:pointer;transition:width .25s,background .25s}
+.dots button.on{width:30px;background:var(--ink)}
+@media (max-width:700px){.arrows{display:none}.fmeta h3{font-size:18px}}
+
+/* ---------- process (sticky story) ---------- */
+.story{display:grid;grid-template-columns:1fr 1fr;gap:80px;margin-top:70px}
+.story-vis{position:sticky;top:130px;height:540px}
+.phone{width:330px;height:540px;margin:0 auto;background:#000;border-radius:48px;padding:12px;
+  box-shadow:0 40px 80px -30px rgba(19,48,42,.45)}
+.phone-in{background:var(--paper);height:100%;border-radius:38px;overflow:hidden;position:relative}
+.phone-in .island{width:100px;height:28px;background:#000;border-radius:16px;margin:12px auto 0}
+.view{position:absolute;inset:60px 20px 20px;opacity:0;transform:translateY(14px);transition:opacity .35s,transform .35s;display:flex;flex-direction:column;gap:12px}
+.view.on{opacity:1;transform:none}
+.view .t{font-size:13px;color:var(--muted)}
+.view .big{font-size:26px;font-weight:600;letter-spacing:-.02em;line-height:1.15}
+.card{background:#fff;border-radius:16px;padding:14px 16px;box-shadow:0 0 0 1px var(--line);font-size:14px}
+.card .row{display:flex;justify-content:space-between;align-items:center}
+.mix{display:flex;height:14px;border-radius:99px;overflow:hidden;margin-top:10px}
+.pill{display:inline-block;font-size:12px;font-weight:500;padding:3px 10px;border-radius:99px;background:var(--mint);color:var(--teal)}
+.okbtn{background:var(--ink);color:#fff;border-radius:14px;text-align:center;padding:14px;font-weight:500;font-size:15px}
+.steps{display:flex;flex-direction:column}
+.step{min-height:70vh;display:flex;flex-direction:column;justify-content:center;opacity:.28;transition:opacity .35s}
+.step.on{opacity:1}
+.step .n{font-size:15px;color:var(--teal);font-weight:600;margin-bottom:10px}
+.step h3{font-size:clamp(28px,3vw,40px);letter-spacing:-.02em;line-height:1.1;margin-bottom:14px}
+.step p{color:var(--muted);max-width:40ch}
+@media (max-width:900px){
+  .story{grid-template-columns:1fr;gap:0}
+  .story-vis{display:none}
+  .step{min-height:0;opacity:1;padding:34px 0;border-top:1px solid var(--line)}
+  .story{margin-top:40px}
+}
+
+/* ---------- do / don't ---------- */
+.two{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-top:56px}
+.col{border-radius:var(--r-l);padding:40px}
+.col.do{background:var(--ink);color:#fff}
+.col.dont{background:#fff;box-shadow:inset 0 0 0 1.5px var(--line)}
+.col h3{font-size:28px;margin-bottom:26px}
+.item{padding:20px 0;border-top:1px solid rgba(255,255,255,.14)}
+.dont .item{border-color:var(--line)}
+.item b{display:block;font-weight:600;font-size:18px;margin-bottom:4px}
+.item p{font-size:15px;opacity:.75}
+.item b::before{content:"";display:inline-block;width:20px;height:20px;margin-right:10px;vertical-align:-3px;border-radius:50%;background:var(--teal-2) url("data:image/svg+xml,%3Csvg xmlns=%27http://www.w3.org/2000/svg%27 viewBox=%270 0 20 20%27%3E%3Cpath d=%27M6 10.5l2.5 2.5L14 7.5%27 stroke=%27white%27 stroke-width=%272.2%27 fill=%27none%27 stroke-linecap=%27round%27/%3E%3C/svg%3E")}
+.dont .item b::before{background:#FDECEC url("data:image/svg+xml,%3Csvg xmlns=%27http://www.w3.org/2000/svg%27 viewBox=%270 0 20 20%27%3E%3Cpath d=%27M7 7l6 6M13 7l-6 6%27 stroke=%27%23E5484D%27 stroke-width=%272.2%27 stroke-linecap=%27round%27/%3E%3C/svg%3E")}
+@media (max-width:900px){.two{grid-template-columns:1fr}.col{padding:30px 24px}}
+
+/* ---------- calculator ---------- */
+.calc{display:grid;grid-template-columns:1fr 1.1fr;gap:16px;margin-top:56px}
+.calc-in,.calc-out{border-radius:var(--r-l);padding:40px}
+.calc-in{background:#fff;box-shadow:inset 0 0 0 1.5px var(--line)}
+.calc-out{background:var(--mist);display:flex;flex-direction:column}
+.field{margin-bottom:34px}
+.field:last-child{margin-bottom:0}
+.field .top{display:flex;justify-content:space-between;align-items:baseline;margin-bottom:12px}
+.field label{font-weight:500}
+.field output{font-size:22px;font-weight:600;color:var(--teal)}
+input[type=range]{width:100%;accent-color:var(--teal);height:28px}
+.result .k{font-size:15px;color:var(--muted)}
+.result .v{font-size:clamp(40px,5vw,60px);font-weight:600;letter-spacing:-.03em;line-height:1.1;margin:4px 0 22px}
+.split{display:flex;gap:28px;font-size:15px}
+.split b{display:block;font-size:20px;font-weight:600}
+.sw{display:inline-block;width:12px;height:12px;border-radius:4px;margin-right:6px;vertical-align:-1px}
+.cbars{flex:1;display:flex;align-items:flex-end;gap:4px;min-height:200px;margin-top:30px}
+.cbar{flex:1;display:flex;flex-direction:column-reverse;border-radius:5px 5px 2px 2px;overflow:hidden}
+.cbar i{display:block;background:var(--mint)} .cbar u{display:block;background:var(--teal)}
+.calc-out .fine{margin-top:16px}
+@media (max-width:900px){.calc{grid-template-columns:1fr}.calc-in,.calc-out{padding:28px 22px}}
+
+/* ---------- fee ---------- */
+.fee{background:var(--ink);color:#fff;border-radius:40px;padding:90px 40px;text-align:center}
+.fee .amt{font-size:clamp(90px,14vw,190px);font-weight:600;letter-spacing:-.05em;line-height:1}
+.fee .amt small{font-size:.22em;letter-spacing:-.01em;font-weight:500;color:#A9C9BF;margin-left:10px}
+.fee .lede{color:#C7D6D1;margin:22px auto 34px;max-width:48ch}
+.fee .btn-dark{background:#fff;color:var(--ink)}
+
+.nums4{display:grid;grid-template-columns:repeat(4,1fr);gap:16px;margin-top:16px}
+.num{background:var(--mist);border-radius:var(--r-m);padding:30px 24px}
+.num b{display:block;font-size:52px;font-weight:600;letter-spacing:-.03em;line-height:1;margin-bottom:10px}
+.num p{font-size:15px;color:var(--muted)}
+@media (max-width:900px){.nums4{grid-template-columns:repeat(2,1fr)}.fee{padding:64px 22px;border-radius:28px}}
+
+/* ---------- partners ---------- */
+.marquee{overflow:hidden;margin-top:40px;mask-image:linear-gradient(90deg,transparent,#000 10%,#000 90%,transparent)}
+.track-m{display:flex;gap:56px;width:max-content;animation:slide 50s linear infinite;align-items:center}
+.track-m img{height:44px;width:auto;filter:grayscale(1);opacity:.75}
+@keyframes slide{to{transform:translateX(-50%)}}
+
+/* ---------- faq ---------- */
+.faq{max-width:820px;margin:56px auto 0}
+details{border-top:1px solid var(--line);padding:6px 0}
+details:last-child{border-bottom:1px solid var(--line)}
+summary{list-style:none;cursor:pointer;padding:22px 44px 22px 0;font-size:19px;font-weight:500;position:relative}
+summary::-webkit-details-marker{display:none}
+summary::after{content:"";position:absolute;right:8px;top:50%;width:14px;height:14px;margin-top:-10px;
+  border-right:2px solid var(--ink);border-bottom:2px solid var(--ink);transform:rotate(45deg);transition:transform .25s}
+details[open] summary::after{transform:rotate(225deg);margin-top:-2px}
+details p{color:var(--muted);padding:0 0 22px;max-width:68ch}
+details p+p{padding-top:0}
+
+/* ---------- contact ---------- */
+.contact{display:grid;grid-template-columns:1fr 1fr;gap:60px;align-items:start}
+.ways{display:grid;gap:12px;margin-top:36px}
+.way{display:flex;justify-content:space-between;align-items:center;background:var(--mist);border-radius:var(--r-m);padding:20px 24px;text-decoration:none}
+.way span{color:var(--muted);font-size:15px}
+.way b{font-weight:600}
+.way:hover{background:#E6EDEA}
+.formbox{background:#fff;border-radius:var(--r-l);padding:36px;box-shadow:inset 0 0 0 1.5px var(--line)}
+.formbox label{display:block;font-size:15px;font-weight:500;margin:0 0 8px}
+.formbox input,.formbox textarea{width:100%;font:400 16px Poppins,sans-serif;color:var(--ink);background:var(--paper);
+  border:1.5px solid var(--line);border-radius:14px;padding:14px 16px;margin-bottom:20px}
+.formbox input:focus,.formbox textarea:focus{outline:none;border-color:var(--teal)}
+.formbox textarea{min-height:120px;resize:vertical}
+.sent{display:none;margin-top:14px;color:var(--teal);font-weight:500}
+@media (max-width:900px){.contact{grid-template-columns:1fr;gap:40px}.formbox{padding:26px 20px}}
+
+/* ---------- meet sprout ---------- */
+.meet2{padding:150px 0 90px;background:linear-gradient(180deg,var(--paper) 0%,#EAF5F0 100%)}
+.meet2 h2{font-size:clamp(56px,9vw,128px);letter-spacing:-.045em}
+.meet2 .lede{margin:28px auto 0;max-width:48ch;font-size:clamp(18px,1.8vw,24px)}
+.pg-stage{position:relative;max-width:980px;margin:40px auto 0;cursor:pointer;border-radius:30px;transition:background .8s}
+.pg-stage.night{background:radial-gradient(ellipse at 50% 70%,#24405F 0,#0F1C2D 70%)}
+.pg-svg{display:block;width:100%;height:auto}
+.fb{transform-box:fill-box;transform-origin:50% 100%}
+#pg-blink{transform-origin:50% 50%}
+.sap{transform-box:fill-box;transform-origin:50% 100%;animation:sway 3.6s ease-in-out infinite}
+@keyframes sway{50%{transform:rotate(5deg)}}
+.bubble{position:absolute;left:50%;top:4%;transform:translate(-50%,10px);background:#fff;color:var(--ink);font-weight:500;font-size:17px;
+  padding:12px 20px;border-radius:20px;white-space:nowrap;opacity:0;transition:opacity .25s,transform .25s;z-index:2;box-shadow:0 12px 30px -12px rgba(19,48,42,.35)}
+.bubble::after{content:"";position:absolute;left:50%;bottom:-7px;width:14px;height:14px;background:#fff;transform:translateX(-50%) rotate(45deg);border-radius:3px}
+.bubble.show{opacity:1;transform:translate(-50%,0)}
+.react{display:flex;flex-wrap:wrap;justify-content:center;gap:10px;margin-top:26px}
+.react button{font:500 16px Poppins,sans-serif;color:var(--ink);background:#fff;border:0;border-radius:999px;padding:12px 18px;cursor:pointer;
+  box-shadow:inset 0 0 0 1.5px var(--line),0 6px 16px -10px rgba(19,48,42,.3);transition:box-shadow .15s,transform .1s}
+.react button:hover{box-shadow:inset 0 0 0 1.5px var(--ink)}
+.react button:active{transform:scale(.96)}
+
+/* ---------- closer ---------- */
+.closer2{padding:140px 0 0;overflow:hidden}
+.closer2 h2{font-size:clamp(52px,9vw,140px);letter-spacing:-.05em;line-height:.98;margin-bottom:46px}
+.grad{background:linear-gradient(90deg,#0E7C66 0%,#1A9A7F 45%,#F5A524 100%);-webkit-background-clip:text;background-clip:text;color:transparent;padding-bottom:.08em}
+.btn-lg{padding:18px 32px;font-size:19px}
+.btn-line{background:#fff;color:var(--teal);box-shadow:inset 0 0 0 2px var(--teal)}
+.btn-line:hover{background:var(--teal);color:#fff}
+.scene{position:relative;height:clamp(240px,28vw,400px);margin-top:50px}
+.wordmark{position:absolute;left:50%;bottom:-.2em;transform:translateX(-50%);font-size:clamp(60px,13.6vw,210px);font-weight:600;
+  letter-spacing:-.055em;line-height:1;color:#EEF3F1;white-space:nowrap;user-select:none}
+.bed{position:absolute;left:50%;bottom:0;transform:translateX(-50%);width:min(560px,86vw);height:auto;overflow:visible}
+.zzz text{animation:zf 2.4s ease-in-out infinite;opacity:0}
+.zzz text:nth-child(2){animation-delay:.8s}.zzz text:nth-child(3){animation-delay:1.6s}
+@keyframes zf{0%{opacity:0;transform:translateY(8px)}40%{opacity:1}100%{opacity:0;transform:translateY(-14px)}}
+.glow{animation:glow 4s ease-in-out infinite}
+@media (max-width:600px){
+  .closer2 h2{font-size:10.2vw}
+  .pg-stage{overflow:hidden}
+  .pg-svg{width:170%;margin-left:-35%}
+  .bubble{top:2%;font-size:15px}
+  .wordmark{color:#F1F5F3}
+}
+@keyframes glow{50%{opacity:.7}}
+
+/* ---------- footer ---------- */
+.site-foot{background:#F0F4F2;border-top:1px solid var(--line)}
+.legal-line{padding:22px 24px 4px;font-size:13px;color:var(--muted);text-align:center}
+.legal-line strong{color:var(--ink);font-weight:600}
+.legal-line p{max-width:none}
+.bar-row .wrap-wide{max-width:1320px;margin:0 auto;padding:18px 24px 26px;display:flex;justify-content:space-between;align-items:center;gap:20px;flex-wrap:wrap;font-size:15px;color:var(--muted)}
+.bar-row nav{display:flex;flex-wrap:wrap;gap:8px 22px}
+.bar-row a{color:var(--muted);text-decoration:none}.bar-row a:hover{color:var(--ink)}
+@media (max-width:900px){.bar-row .wrap-wide{flex-direction:column;align-items:flex-start}}
+
+.wa{position:fixed;right:22px;bottom:22px;z-index:40;width:60px;height:60px;border-radius:50%;background:var(--teal);display:grid;place-items:center;
+  box-shadow:0 14px 30px -10px rgba(14,124,102,.6)}
+.wa svg{width:28px;height:28px}
+
+@media (prefers-reduced-motion:reduce){
+  *,*::before,*::after{animation:none!important;transition:none!important}
+  html{scroll-behavior:auto}
+}
+
+/* hero atmosphere + floating chips */
+.hero{position:relative;background:
+  radial-gradient(620px 420px at 50% 26%,rgba(191,227,217,.55),transparent 70%),
+  radial-gradient(520px 360px at 82% 62%,rgba(245,165,36,.13),transparent 70%),
+  radial-gradient(520px 360px at 16% 70%,rgba(14,124,102,.08),transparent 70%)}
+.hero .wrap{position:relative}
+.hero .sprout{animation:drop 1.1s cubic-bezier(.3,1.5,.5,1) .2s both,bob 3.2s ease-in-out 1.4s infinite}
+@keyframes bob{50%{transform:translateY(-8px)}}
+.chips{position:absolute;inset:0;pointer-events:none}
+.chip{position:absolute;display:flex;align-items:center;gap:12px;background:#fff;border-radius:18px;padding:12px 16px 12px 12px;text-align:left;
+  box-shadow:0 0 0 1px var(--line),0 18px 40px -20px rgba(19,48,42,.35);animation:floaty 6s ease-in-out infinite;opacity:0}
+.chip b{display:block;font-size:14px;font-weight:600;line-height:1.3}
+.chip small{display:block;font-size:12.5px;color:var(--muted);line-height:1.3}
+.chip .ci{width:38px;height:38px;border-radius:12px;background:var(--mist);display:grid;place-items:center;font-size:18px;flex:none}
+.chip .ci.ok{background:#E3F1EC;color:var(--teal);font-weight:700}
+.chip .ci.gold{background:#FFF1D6;color:#B86E08;font-size:13px;font-weight:700}
+.chip .mini{width:120px;height:6px;border-radius:9px;background:var(--mist);margin:5px 0 3px;overflow:hidden}
+.chip .mini i{display:block;height:100%;background:var(--teal);border-radius:9px}
+.c1{left:0;top:30px;--r:-4deg;animation-delay:0s}
+.c2{right:0;top:60px;--r:3deg;animation-delay:-1.5s}
+.c3{left:2%;top:540px;--r:2deg;animation-delay:-3s}
+.c4{right:3%;top:520px;--r:-3deg;animation-delay:-4.5s}
+@keyframes floaty{0%,100%{transform:translateY(0) rotate(var(--r))}50%{transform:translateY(-10px) rotate(var(--r))}}
+.chip{animation:chipin .7s cubic-bezier(.3,1.4,.5,1) forwards,floaty 6s ease-in-out infinite}
+.c1{animation-delay:1.0s,0s}.c2{animation-delay:1.2s,-1.5s}.c3{animation-delay:1.4s,-3s}.c4{animation-delay:1.6s,-4.5s}
+@keyframes chipin{from{opacity:0;transform:translateY(16px) rotate(var(--r))}to{opacity:1;transform:translateY(0) rotate(var(--r))}}
+@media (max-width:1150px){.chips{display:none}}
+
+/* hero: rotating goal word, growth curve, layered chips */
+.rotline{display:inline-block}
+
+.growth{position:absolute;left:50%;width:100vw;transform:translateX(-50%);top:330px;height:380px;z-index:0;pointer-events:none}
+.g-line{stroke-dasharray:1500;stroke-dashoffset:1500;animation:gdraw 2.6s cubic-bezier(.4,0,.2,1) .6s forwards}
+.g-area{opacity:0;animation:gfade 1.4s ease 1.8s forwards}
+.g-dots circle{opacity:0;transform-box:fill-box;transform-origin:center;animation:gpop .5s cubic-bezier(.3,1.6,.5,1) forwards}
+.g-dots circle:nth-child(1){animation-delay:1.9s}.g-dots circle:nth-child(2){animation-delay:2.3s}.g-dots circle:nth-child(3){animation-delay:2.8s}
+@keyframes gdraw{to{stroke-dashoffset:0}} @keyframes gfade{to{opacity:1}} @keyframes gpop{from{opacity:0;transform:scale(0)}to{opacity:1;transform:scale(1)}}
+.hero .wrap>*:not(.growth):not(.chips){position:relative;z-index:1}
+.chips{z-index:2}
+.c1{left:-1%;top:10px;--r:-5deg}
+.c2{right:1%;top:120px;--r:3deg;transform-origin:center}
+.c3{left:-2%;top:590px;--r:2deg;filter:blur(.6px);opacity:.85}
+.c4{right:-2%;top:540px;--r:-3deg}
+.c1 .ci,.c4 .ci{width:44px;height:44px}
+.c3{scale:.88}.c2{scale:1.05}
+@media (prefers-reduced-motion:reduce){.g-line{stroke-dashoffset:0}.g-area,.g-dots circle{opacity:1}}
+@media (max-width:700px){.growth{top:300px;height:260px}}
+
+.rot{position:relative;display:inline-block;height:1.22em;vertical-align:-.27em;background:#E3F1EC;border-radius:.28em;overflow:hidden;
+  margin:0 .04em;transition:width .55s cubic-bezier(.3,1.1,.4,1);box-shadow:inset 0 0 0 2px rgba(14,124,102,.12)}
+.rw{position:absolute;left:.22em;top:0;line-height:1.16em;white-space:nowrap;color:var(--teal);opacity:0;transform:translateY(100%);
+  transition:transform .55s cubic-bezier(.3,1.1,.4,1),opacity .35s}
+.rw em{font-style:normal;font-size:.62em;margin-right:.18em;vertical-align:.12em}
+.rw.on{opacity:1;transform:none}
+.rw.out{opacity:0;transform:translateY(-100%)}
+.forline{font-size:clamp(18px,1.9vw,24px);font-weight:500;color:var(--ink);margin:-6px 0 22px;display:flex;align-items:center;justify-content:center;gap:.45em;flex-wrap:wrap}
+.forline .rot{height:1.9em;vertical-align:middle;border-radius:999px}
+.forline .rw{left:.75em;line-height:1.9em;font-weight:600}
+.forline .rw em{font-size:1em;vertical-align:0;margin-right:.35em}
+.typer{display:inline-block;text-align:left;white-space:nowrap;color:var(--teal);font-weight:600}
+.caret{display:inline-block;width:2px;height:1.05em;background:var(--teal);margin-left:3px;vertical-align:-.15em;animation:blinkc 1s steps(1) infinite}
+@keyframes blinkc{50%{opacity:0}}
+.forline{display:block;text-align:center}
+
+#bed-glow{transition:opacity .9s ease}
+#bedscene.off #bed-glow{opacity:0!important;animation:none}
+#bedscene.off #bed-shade{fill:#E3D9BF}
+#bed-shade{transition:fill .9s ease}
+#bed-zzz{transition:opacity .8s ease}
+#bedscene:not(.asleep) #bed-zzz{opacity:0}
+.bs-body,.bs-open{transform-box:fill-box;transform-origin:50% 60%}
+
+#bed-sprout{outline:none}
+#bed-sprout:focus{outline:none}
+#bed-sprout:focus-visible .bs-body{filter:drop-shadow(0 0 6px rgba(14,124,102,.55))}
+#bed-status,#bed-time{transition:opacity .45s ease,transform .45s ease}
+#bed-status.fade{opacity:0;transform:translateY(6px)}
+
+.scene .daysc{display:none}
+.scene.is-day .daysc{display:block}
+.scene.is-day #bedscene{display:none}
+.can-rot{transform-box:view-box;transform-origin:0 0;transition:transform .8s cubic-bezier(.45,0,.25,1)}
+#dayscene.pour .can-rot{transform:rotate(26deg)}
+.mp-leaf,.mp-coin{opacity:0}
+#day-sprout{outline:none}
+#day-status,#day-time{transition:opacity .22s ease,transform .22s ease}
+#day-status.fade{opacity:0;transform:translateY(6px)}
+</style>
+<link rel="icon" type="image/svg+xml" href="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9Ii05NSAtMTUwIDE5MCAyMzUiPjxkZWZzPjxsaW5lYXJHcmFkaWVudCBpZD0ibnMtbGVhZiI+PHN0b3Agb2Zmc2V0PSIwIiBzdG9wLWNvbG9yPSIjMEU3QzY2Ii8+PHN0b3Agb2Zmc2V0PSIxIiBzdG9wLWNvbG9yPSIjMEU3QzY2Ii8+PC9saW5lYXJHcmFkaWVudD48bGluZWFyR3JhZGllbnQgaWQ9Im5zLWxlYWYyIj48c3RvcCBvZmZzZXQ9IjAiIHN0b3AtY29sb3I9IiMxQTlBN0YiLz48c3RvcCBvZmZzZXQ9IjEiIHN0b3AtY29sb3I9IiMxQTlBN0YiLz48L2xpbmVhckdyYWRpZW50PjxyYWRpYWxHcmFkaWVudCBpZD0ibnMtYnViIiBjeD0iMzglIiBjeT0iMzIlIiByPSI3NSUiPjxzdG9wIG9mZnNldD0iMCIgc3RvcC1jb2xvcj0iI0ZGRDI3QSIvPjxzdG9wIG9mZnNldD0iLjU1IiBzdG9wLWNvbG9yPSIjRjVBNTI0Ii8+PHN0b3Agb2Zmc2V0PSIxIiBzdG9wLWNvbG9yPSIjRTA4NDFBIi8+PC9yYWRpYWxHcmFkaWVudD48cmFkaWFsR3JhZGllbnQgaWQ9Im5zLWRleWUiIGN4PSIuNCIgY3k9Ii4zIiByPSIuOCI+PHN0b3Agb2Zmc2V0PSIwIiBzdG9wLWNvbG9yPSIjMkU0QTYwIi8+PHN0b3Agb2Zmc2V0PSIuNyIgc3RvcC1jb2xvcj0iIzEwMUEyNiIvPjxzdG9wIG9mZnNldD0iMSIgc3RvcC1jb2xvcj0iIzA2MEExMCIvPjwvcmFkaWFsR3JhZGllbnQ+PGZpbHRlciBpZD0ibnMtc29mdCIgeD0iLTYwJSIgeT0iLTYwJSIgd2lkdGg9IjIyMCUiIGhlaWdodD0iMjIwJSI+PGZlR2F1c3NpYW5CbHVyIHN0ZERldmlhdGlvbj0iNCIvPjwvZmlsdGVyPjwvZGVmcz4KICAgIDxwYXRoIGQ9Ik0wIC03OCBMMCAtMTE4IiBzdHJva2U9IiMwRTdDNjYiIHN0cm9rZS13aWR0aD0iOCIgc3Ryb2tlLWxpbmVjYXA9InJvdW5kIi8+CiAgICA8cGF0aCBkPSJNMCAtMTE2IEMxOCAtMTQ2IDU0IC0xNDggNzIgLTEyNiBDNTIgLTExMCAyMCAtMTA4IDAgLTExNloiIGZpbGw9InVybCgjbnMtbGVhZikiLz4KICAgIDxwYXRoIGQ9Ik0wIC0xMDQgQy0xNCAtMTI4IC00NCAtMTMwIC01OCAtMTEyIEMtNDIgLTEwMCAtMTYgLTk4IDAgLTEwNFoiIGZpbGw9InVybCgjbnMtbGVhZjIpIi8+CiAgICAKICAgIDxwYXRoIGQ9Ik0wIC04NCBDNTAgLTg0IDg2IC01MCA4NiAtMiBDODYgNDggNTAgNzggMCA3OCBDLTUwIDc4IC04NiA0OCAtODYgLTIgQy04NiAtNTAgLTUwIC04NCAwIC04NFoiIGZpbGw9InVybCgjbnMtYnViKSIvPgogICAgPHBhdGggZD0iTS01OCAtMzggQy01MiAtNjIgLTI4IC03NCAtNiAtNzQiIHN0cm9rZT0iI2ZmZiIgc3Ryb2tlLXdpZHRoPSIxMiIgc3Ryb2tlLWxpbmVjYXA9InJvdW5kIiBmaWxsPSJub25lIiBvcGFjaXR5PSIuNTUiLz48Y2lyY2xlIGN4PSItNjMiIGN5PSItMTYiIHI9IjUuNSIgZmlsbD0iI2ZmZiIgb3BhY2l0eT0iLjU1Ii8+CiAgICAKICAgIDxlbGxpcHNlIGN4PSItNDYiIGN5PSIyMCIgcng9IjEzIiByeT0iOCIgZmlsbD0iI0ZGNkY4RSIgb3BhY2l0eT0iLjUiIGZpbHRlcj0idXJsKCNucy1zb2Z0KSIvPgogICAgPGVsbGlwc2UgY3g9IjQ2IiBjeT0iMjAiIHJ4PSIxMyIgcnk9IjgiIGZpbGw9IiNGRjZGOEUiIG9wYWNpdHk9Ii41IiBmaWx0ZXI9InVybCgjbnMtc29mdCkiLz4KICAgIDxlbGxpcHNlIGN4PSItMjIiIGN5PSItNiIgcng9IjExIiByeT0iMTUiIGZpbGw9InVybCgjbnMtZGV5ZSkiLz48Y2lyY2xlIGN4PSItMTgiIGN5PSItMTIiIHI9IjQuMiIgZmlsbD0iI2ZmZiIvPjxjaXJjbGUgY3g9Ii0yNiIgY3k9IjIiIHI9IjEuOCIgZmlsbD0iI2ZmZiIgb3BhY2l0eT0iLjciLz4KICAgIDxlbGxpcHNlIGN4PSIyMiIgY3k9Ii02IiByeD0iMTEiIHJ5PSIxNSIgZmlsbD0idXJsKCNucy1kZXllKSIvPjxjaXJjbGUgY3g9IjI2IiBjeT0iLTEyIiByPSI0LjIiIGZpbGw9IiNmZmYiLz48Y2lyY2xlIGN4PSIxOCIgY3k9IjIiIHI9IjEuOCIgZmlsbD0iI2ZmZiIgb3BhY2l0eT0iLjciLz4KICAgIDxwYXRoIGQ9Ik0tMTggMjIgcTE4IDE4IDM2IDAiIHN0cm9rZT0iIzEzMzAyQSIgc3Ryb2tlLXdpZHRoPSI1IiBzdHJva2UtbGluZWNhcD0icm91bmQiIGZpbGw9Im5vbmUiLz4KICA8L3N2Zz4=">
+<meta name="theme-color" content="#13302A">
+<link rel="apple-touch-icon" href="app/icons/apple-touch-icon.png">
+</head>
+<body>
+
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <defs><linearGradient id="ns-mouth" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#5A2A1E"/><stop offset="1" stop-color="#2A120C"/></linearGradient><filter id="ns-esh" x="-40%" y="-40%" width="180%" height="180%"><feDropShadow dx="0" dy="1.5" stdDeviation="1.5" flood-color="#8A4A0A" flood-opacity=".35"/></filter><radialGradient id="ns-bub" cx="38%" cy="32%" r="75%"><stop offset="0" stop-color="#FFD27A"/><stop offset=".55" stop-color="#F5A524"/><stop offset="1" stop-color="#E0841A"/></radialGradient>
+    <radialGradient id="ns-gold"><stop offset="0" stop-color="#F5A524"/><stop offset="1" stop-color="#F5A524"/></radialGradient>
+    <linearGradient id="ns-goldrim" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#FFF3CC"/><stop offset=".5" stop-color="#E39312"/><stop offset="1" stop-color="#9C5A05"/></linearGradient>
+    <radialGradient id="ns-plate" cx=".4" cy=".25" r=".9"><stop offset="0" stop-color="#2F5C52"/><stop offset=".6" stop-color="#13302A"/><stop offset="1" stop-color="#0A1D19"/></radialGradient>
+    <linearGradient id="ns-eye" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#FFFFFF"/><stop offset="1" stop-color="#CFF7EA"/></linearGradient>
+    <radialGradient id="ns-deye" cx=".4" cy=".3" r=".8"><stop offset="0" stop-color="#2E4A60"/><stop offset=".7" stop-color="#101A26"/><stop offset="1" stop-color="#060A10"/></radialGradient>
+    <linearGradient id="ns-leaf"><stop offset="0" stop-color="#0E7C66"/><stop offset="1" stop-color="#0E7C66"/></linearGradient>
+    <linearGradient id="ns-leaf2"><stop offset="0" stop-color="#1A9A7F"/><stop offset="1" stop-color="#1A9A7F"/></linearGradient>
+    <filter id="ns-glow" x="-80%" y="-80%" width="260%" height="260%"><feGaussianBlur stdDeviation="3.2" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
+    <filter id="ns-soft" x="-60%" y="-60%" width="220%" height="220%"><feGaussianBlur stdDeviation="4"/></filter>
+  </defs>
+  <symbol id="sprout" viewBox="-90 -180 180 270">
+    <path d="M0 -78 L0 -118" stroke="#0E7C66" stroke-width="8" stroke-linecap="round"/>
+    <path d="M0 -116 C18 -146 54 -148 72 -126 C52 -110 20 -108 0 -116Z" fill="url(#ns-leaf)"/>
+    <path d="M0 -104 C-14 -128 -44 -130 -58 -112 C-42 -100 -16 -98 0 -104Z" fill="url(#ns-leaf2)"/>
+    
+    <path d="M0 -84 C50 -84 86 -50 86 -2 C86 48 50 78 0 78 C-50 78 -86 48 -86 -2 C-86 -50 -50 -84 0 -84Z" fill="url(#ns-bub)"/>
+    <path d="M-58 -38 C-52 -62 -28 -74 -6 -74" stroke="#fff" stroke-width="12" stroke-linecap="round" fill="none" opacity=".55"/><circle cx="-63" cy="-16" r="5.5" fill="#fff" opacity=".55"/>
+    
+    <ellipse cx="-46" cy="20" rx="13" ry="8" fill="#FF6F8E" opacity=".5" filter="url(#ns-soft)"/>
+    <ellipse cx="46" cy="20" rx="13" ry="8" fill="#FF6F8E" opacity=".5" filter="url(#ns-soft)"/>
+    <ellipse cx="-22" cy="-6" rx="11" ry="15" fill="url(#ns-deye)"/><circle cx="-18" cy="-12" r="4.2" fill="#fff"/><circle cx="-26" cy="2" r="1.8" fill="#fff" opacity=".7"/>
+    <ellipse cx="22" cy="-6" rx="11" ry="15" fill="url(#ns-deye)"/><circle cx="26" cy="-12" r="4.2" fill="#fff"/><circle cx="18" cy="2" r="1.8" fill="#fff" opacity=".7"/>
+    <path d="M-18 22 q18 18 36 0" stroke="#13302A" stroke-width="5" stroke-linecap="round" fill="none"/>
+  </symbol><symbol id="sprout-happy" viewBox="-90 -180 180 270">
+    <path d="M0 -78 L0 -118" stroke="#0E7C66" stroke-width="8" stroke-linecap="round"/>
+    <path d="M0 -116 C18 -146 54 -148 72 -126 C52 -110 20 -108 0 -116Z" fill="url(#ns-leaf)"/>
+    <path d="M0 -104 C-14 -128 -44 -130 -58 -112 C-42 -100 -16 -98 0 -104Z" fill="url(#ns-leaf2)"/>
+    
+    <path d="M0 -84 C50 -84 86 -50 86 -2 C86 48 50 78 0 78 C-50 78 -86 48 -86 -2 C-86 -50 -50 -84 0 -84Z" fill="url(#ns-bub)"/>
+    <path d="M-58 -38 C-52 -62 -28 -74 -6 -74" stroke="#fff" stroke-width="12" stroke-linecap="round" fill="none" opacity=".55"/><circle cx="-63" cy="-16" r="5.5" fill="#fff" opacity=".55"/>
+    
+    <ellipse cx="-46" cy="20" rx="13" ry="8" fill="#FF6F8E" opacity=".5" filter="url(#ns-soft)"/>
+    <ellipse cx="46" cy="20" rx="13" ry="8" fill="#FF6F8E" opacity=".5" filter="url(#ns-soft)"/>
+    <ellipse cx="-22" cy="-6" rx="11" ry="15" fill="url(#ns-deye)"/><circle cx="-18" cy="-12" r="4.2" fill="#fff"/><circle cx="-26" cy="2" r="1.8" fill="#fff" opacity=".7"/>
+    <ellipse cx="22" cy="-6" rx="11" ry="15" fill="url(#ns-deye)"/><circle cx="26" cy="-12" r="4.2" fill="#fff"/><circle cx="18" cy="2" r="1.8" fill="#fff" opacity=".7"/>
+    <path d="M-22 16 Q0 50 22 16 Q0 24 -22 16Z" fill="url(#ns-mouth)" filter="url(#ns-esh)"/><path d="M-10 31 Q0 40 10 31 Q0 26 -10 31Z" fill="#FF7E8A"/>
+  </symbol>
+</svg>
+
+<!-- top bar -->
+<header class="bar" id="hw-bar">
+  <div class="wrap">
+    <div class="left">
+      <a class="brand" href="#top" aria-label="HappyWealth home"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 -60 6875 1280" class="logo" role="img" aria-label="happywealth"><defs><linearGradient id="lg-wgold"><stop offset="0" stop-color="#F5A524"/><stop offset="1" stop-color="#F5A524"/></linearGradient>
+<linearGradient id="lg-wgreen" x1="0" y1="1" x2="1" y2="0"><stop offset="0" stop-color="#0E7C66"/><stop offset="1" stop-color="#1A9A7F"/></linearGradient>
+<linearGradient id="lg-gold" x1="0" y1="1" x2="1" y2="0"><stop offset="0" stop-color="#E8870E"/><stop offset="1" stop-color="#FFC94D"/></linearGradient>
+<linearGradient id="lg-grow" x1="0" y1="1" x2="1" y2="0"><stop offset="0" stop-color="#14A07F"/><stop offset=".6" stop-color="#3FD3A2"/><stop offset="1" stop-color="#F5B83A"/></linearGradient>
+<linearGradient id="lg-leaf" x1="0" y1="1" x2="1" y2="0"><stop offset="0" stop-color="#14A07F"/><stop offset="1" stop-color="#5BE3B4"/></linearGradient></defs><path d="M617 326V0H447V303Q447 359 418.0 390.0Q389 421 340 421Q291 421 262.0 390.0Q233 359 233 303V0H62V740H233V483Q259 520 304.0 542.0Q349 564 405 564Q501 564 559.0 500.5Q617 437 617 326Z" transform="translate(60 900) scale(1 -1)" fill="#13302A"/><path d="M274 566Q333 566 377.5 542.0Q422 518 446 479V558H617V0H446V79Q421 40 376.5 16.0Q332 -8 273 -8Q205 -8 149.0 27.5Q93 63 60.5 128.5Q28 194 28 280Q28 366 60.5 431.0Q93 496 149.0 531.0Q205 566 274 566ZM324 417Q273 417 237.5 380.5Q202 344 202 280Q202 216 237.5 178.5Q273 141 324 141Q375 141 410.5 178.0Q446 215 446 279Q446 343 410.5 380.0Q375 417 324 417Z" transform="translate(720 900) scale(1 -1)" fill="#13302A"/><path d="M405 566Q474 566 530.0 531.0Q586 496 618.5 431.0Q651 366 651 280Q651 194 618.5 128.5Q586 63 530.0 27.5Q474 -8 405 -8Q347 -8 302.5 16.0Q258 40 233 78V-266H62V558H233V479Q258 518 302.0 542.0Q346 566 405 566ZM354 417Q303 417 267.5 380.0Q232 343 232 279Q232 215 267.5 178.0Q303 141 354 141Q405 141 441.0 178.5Q477 216 477 280Q477 344 441.5 380.5Q406 417 354 417Z" transform="translate(1385 900) scale(1 -1)" fill="#13302A"/><path d="M405 566Q474 566 530.0 531.0Q586 496 618.5 431.0Q651 366 651 280Q651 194 618.5 128.5Q586 63 530.0 27.5Q474 -8 405 -8Q347 -8 302.5 16.0Q258 40 233 78V-266H62V558H233V479Q258 518 302.0 542.0Q346 566 405 566ZM354 417Q303 417 267.5 380.0Q232 343 232 279Q232 215 267.5 178.0Q303 141 354 141Q405 141 441.0 178.5Q477 216 477 280Q477 344 441.5 380.5Q406 417 354 417Z" transform="translate(2050 900) scale(1 -1)" fill="#13302A"/><path d="M632 558 282 -265H98L226 19L-1 558H190L319 209L447 558Z" transform="translate(2715 900) scale(1 -1)" fill="#13302A"/><path d="M3403 382 L3583 860 L3766 552 L3949 860 L4173 232" fill="none" stroke="url(#lg-wgold)" stroke-width="150" stroke-linecap="round" stroke-linejoin="round"/><path d="M3983 242 L4181 226 L4163 432" fill="none" stroke="url(#lg-wgreen)" stroke-width="150" stroke-linecap="round" stroke-linejoin="round"/><path d="M585 238H198Q202 186 231.5 158.5Q261 131 304 131Q368 131 393 185H575Q561 130 524.5 86.0Q488 42 433.0 17.0Q378 -8 310 -8Q228 -8 164.0 27.0Q100 62 64.0 127.0Q28 192 28 279Q28 366 63.5 431.0Q99 496 163.0 531.0Q227 566 310 566Q391 566 454.0 532.0Q517 498 552.5 435.0Q588 372 588 288Q588 264 585 238ZM413 333Q413 377 383.0 403.0Q353 429 308 429Q265 429 235.5 404.0Q206 379 199 333Z" transform="translate(4215 900) scale(1 -1)" fill="#13302A"/><path d="M274 566Q333 566 377.5 542.0Q422 518 446 479V558H617V0H446V79Q421 40 376.5 16.0Q332 -8 273 -8Q205 -8 149.0 27.5Q93 63 60.5 128.5Q28 194 28 280Q28 366 60.5 431.0Q93 496 149.0 531.0Q205 566 274 566ZM324 417Q273 417 237.5 380.5Q202 344 202 280Q202 216 237.5 178.5Q273 141 324 141Q375 141 410.5 178.0Q446 215 446 279Q446 343 410.5 380.0Q375 417 324 417Z" transform="translate(4817 900) scale(1 -1)" fill="#13302A"/><path d="M233 740V0H62V740Z" transform="translate(5482 900) scale(1 -1)" fill="#13302A"/><path d="M373 145V0H286Q193 0 141.0 45.5Q89 91 89 194V416H21V558H89V694H260V558H372V416H260V192Q260 167 272.0 156.0Q284 145 312 145Z" transform="translate(5763 900) scale(1 -1)" fill="#13302A"/><path d="M617 326V0H447V303Q447 359 418.0 390.0Q389 421 340 421Q291 421 262.0 390.0Q233 359 233 303V0H62V740H233V483Q259 520 304.0 542.0Q349 564 405 564Q501 564 559.0 500.5Q617 437 617 326Z" transform="translate(6155 900) scale(1 -1)" fill="#13302A"/></svg></a>
+      <nav class="nav" aria-label="Main">
+        <a href="#process">How it works</a>
+        <a href="#calculator">Calculator</a>
+      </nav>
+    </div>
+    <div class="bar-right">
+      <a class="btn btn-ghost" href="app/">Log in</a>
+      <a class="btn btn-dark" href="#contact">Book a call</a>
+    </div>
+  </div>
+</header>
+
+<!-- the notch: follows you down the page, opens on hover -->
+<div class="notch" id="hw-notch" tabindex="0" aria-label="Sprout, your HappyWealth guide. Hover or focus to open.">
+  <div class="row">
+    <span class="dot" id="hw-dot" style="background:#0E7C66"></span>
+    <span class="lbl swap" id="hw-lbl">How it works</span>
+    <span class="val swap" id="hw-val">Step 1 of 6</span>
+  </div>
+  <div class="panel">
+    <a class="tile" href="#contact"><b>Talk to us</b><span>Book a call</span></a>
+    <a class="tile" href="#calculator"><b>Plan a goal</b><span>SIP calculator</span></a>
+    <a class="tile" href="https://wa.me/918639074186"><b>Quick question</b><span>WhatsApp</span></a>
+    <a class="tile" href="app/"><b>Existing investor</b><span>Log in</span></a>
+  </div>
+</div>
+
+<main id="top">
+
+<!-- hero -->
+<section class="hero">
+  <div class="wrap">
+    <svg class="sprout" aria-hidden="true"><use href="#sprout"/></svg>
+    <div class="chips" aria-hidden="true">
+      <div class="chip c1"><span class="ci">🎓</span><div><b>Aarav's college</b><div class="mini"><i style="width:62%"></i></div><small>62% funded</small></div></div>
+      <div class="chip c4"><span class="ci ok">✓</span><div><b>Portfolio reviewed</b><small>All 3 goals on track</small></div></div>
+    </div>
+    <h1>Your goals.<br><span class="grad">Growing quietly.</span></h1>
+    <p class="forline" aria-label="Planning for your child's future, your first home, a family wedding, a calm retirement">Planning for <span class="typer" aria-hidden="true"><span class="tw">your child's future 🎓</span><span class="caret"></span></span></p>
+    <p class="lede">HappyWealth turns what you want for your family into a clear, monitored mutual fund plan. No advice fees, and every rupee stays in your name.</p>
+    <div class="btns">
+      <a class="btn btn-dark" href="#contact">Book a free consultation</a>
+      <a class="btn btn-ghost" href="#calculator">Try the SIP calculator</a>
+    </div>
+    <p class="fine">AMFI Registered Mutual Fund Distributor, ARN-349762</p>
+
+    <div class="board-intro">
+      <h2>Saving, with a purpose.</h2>
+      <p>Instead of one big pot of savings, every goal gets its own name, target date and monthly SIP. You always know how close each one is.</p>
+      <ol class="how3">
+        <li><span>1</span>Name a goal and a date</li>
+        <li><span>2</span>Start a monthly SIP for it</li>
+        <li><span>3</span>Watch it get funded</li>
+      </ol>
+    </div>
+    <div class="board" id="hw-board">
+      <div class="board-head">
+        <div class="bh-l">
+          <svg class="bh-ic" aria-hidden="true"><use href="#sprout"/></svg>
+          <div><div class="bh-t">Goal tracker</div><div class="bh-s"><i></i>A sample plan with 3 goals, all on track</div></div>
+        </div>
+        <div class="bh-stats">
+          <div><span>Monthly SIPs</span><b>₹32,500</b></div>
+          <div><span>Saved so far</span><b>₹76.9 L</b></div>
+          <div class="ring" aria-label="Overall 23% of total target reached"><em>23%</em><svg viewBox="0 0 44 44"><circle cx="22" cy="22" r="18" fill="none" stroke="#E3ECE8" stroke-width="5"/><circle id="hw-ring" cx="22" cy="22" r="18" fill="none" stroke="#0E7C66" stroke-width="5" stroke-linecap="round" stroke-dasharray="113.1" stroke-dashoffset="113.1" transform="rotate(-90 22 22)"/></svg></div>
+        </div>
+      </div>
+      <div class="canvas" id="hw-canvas">
+        <div class="goal" style="left:4%;top:44px;--r:-3deg" tabindex="0">
+          <div class="g-top"><span class="ico" aria-hidden="true">🎓</span><span class="ok">On track</span></div>
+          <h3>Aarav's college</h3><div class="meta">Target 2038</div>
+          <div class="track"><div class="fill" data-w="62"></div></div>
+          <div class="nums"><span><b>62%</b> funded</span><span>₹25 L goal</span></div>
+          <div class="sip"><span>Monthly SIP</span><b>₹9,800</b></div>
+        </div>
+        <div class="goal" style="left:36%;top:96px;--r:1.5deg" tabindex="0">
+          <div class="g-top"><span class="ico" aria-hidden="true">🏡</span><span class="ok">On track</span></div>
+          <h3>First home</h3><div class="meta">Target 2030</div>
+          <div class="track"><div class="fill" data-w="41"></div></div>
+          <div class="nums"><span><b>41%</b> funded</span><span>₹18 L goal</span></div>
+          <div class="sip"><span>Monthly SIP</span><b>₹12,000</b></div>
+        </div>
+        <div class="goal" style="left:68%;top:36px;--r:3deg" tabindex="0">
+          <div class="g-top"><span class="ico" aria-hidden="true">🌴</span><span class="ok">On track</span></div>
+          <h3>Retire at 55</h3><div class="meta">Target 2050</div>
+          <div class="track"><div class="fill" data-w="18"></div></div>
+          <div class="nums"><span><b>18%</b> funded</span><span>₹3 Cr goal</span></div>
+          <div class="sip"><span>Monthly SIP</span><b>₹10,700</b></div>
+        </div>
+        <div class="anno" id="hw-anno" aria-hidden="true">
+          <svg viewBox="0 0 90 70" width="90" height="70"><path d="M84 62 C60 64 30 52 18 14" fill="none" stroke="#5B6B66" stroke-width="2.4" stroke-linecap="round" stroke-dasharray="1 7"/><path d="M8 24 L18 10 L28 22" fill="none" stroke="#5B6B66" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          <span>Go on, drag one around</span>
+        </div>
+      </div>
+      <div class="board-foot">Sample goals for illustration only. Not real client data.</div>
+    </div>
+  </div>
+</section>
+
+<!-- highlights -->
+<section>
+  <div class="wrap">
+    <h2>Get the highlights.</h2>
+    <div class="grid4">
+      <div class="hl">
+        <div class="glyph" aria-hidden="true"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="#0E7C66" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="4.5"/><circle cx="12" cy="12" r="1" fill="#0E7C66"/></svg></div>
+        <div><h3>Strategic approach</h3><p>Every plan starts from a goal with a date and an amount, not from a hot fund.</p></div>
+      </div>
+      <div class="hl">
+        <div class="glyph" aria-hidden="true"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="#0E7C66" stroke-width="2" stroke-linecap="round"><path d="M4 6h10M4 12h16M4 18h7"/></svg></div>
+        <div><h3>Process-driven</h3><p>The same six steps for every investor, so nothing depends on mood or headlines.</p></div>
+      </div>
+      <div class="hl">
+        <div class="glyph" aria-hidden="true"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="#0E7C66" stroke-width="2"><path d="M12 3v9l7.8 4.5"/><circle cx="12" cy="12" r="9"/></svg></div>
+        <div><h3>Diversified allocation</h3><p>The right mix of equity, debt and gold, so one bad market doesn't sink a goal.</p></div>
+      </div>
+      <div class="hl">
+        <div class="glyph" aria-hidden="true"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="#0E7C66" stroke-width="2" stroke-linecap="round"><rect x="4" y="5" width="16" height="15" rx="3"/><path d="M4 10h16M9 3v4M15 3v4"/></svg></div>
+        <div><h3>Periodic review</h3><p>We check your portfolio on a schedule and rebalance only when it's needed.</p></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- films -->
+<section class="film" id="films">
+  <div class="wrap reel-head">
+    <div>
+      <h2>Short films on money.</h2>
+      <p class="lede" style="margin-top:18px">Five quick stories on why investing matters. Swipe, or use the arrows.</p>
+    </div>
+    <div class="arrows">
+      <button type="button" class="arr" id="reel-prev" aria-label="Previous film"><svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M15 5l-7 7 7 7"/></svg></button>
+      <button type="button" class="arr" id="reel-next" aria-label="Next film"><svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M9 5l7 7-7 7"/></svg></button>
+    </div>
+  </div>
+  <div class="reel" id="reel">
+    <article class="fcard" data-film="0">
+      <div class="fscreen"><svg id="stage" viewBox="0 0 1920 1080" xmlns="http://www.w3.org/2000/svg" role="img"
+     aria-label="Animated story: money left idle loses value to inflation, while a monthly SIP can grow over 20 years.">
+  <rect width="1920" height="1080" fill="#FBFCFB"/>
+
+  <!-- copy blocks are generated into here -->
+  <g id="copy"></g>
+
+  <!-- jar -->
+  <g id="jar" opacity="0">
+    <rect x="1225" y="470" width="310" height="380" rx="56" fill="#0E7C66" fill-opacity=".05" stroke="#C9D6D1" stroke-width="6"/>
+    <rect x="1260" y="440" width="240" height="44" rx="14" fill="#E7EEEB" stroke="#C9D6D1" stroke-width="6"/>
+    <path d="M1262 540 q-8 70 0 140" stroke="#fff" stroke-width="10" stroke-linecap="round" fill="none" opacity=".9"/>
+    <text x="1380" y="905" text-anchor="middle" font-size="26" fill="#5B6B66">Savings account</text>
+  </g>
+
+  <!-- price tag -->
+  <g id="tag" opacity="0">
+    <g id="tagSwing">
+      <line x1="0" y1="-120" x2="0" y2="-36" stroke="#9FB0AA" stroke-width="3"/>
+      <path d="M-120 -20 L120 -20 L120 120 L-120 120 Z M0 -60 L-70 -20 L70 -20 Z" fill="#fff" stroke="#E5484D" stroke-width="5" stroke-linejoin="round"/>
+      <circle cx="0" cy="-30" r="8" fill="#FBFCFB" stroke="#E5484D" stroke-width="4"/>
+      <text x="0" y="30" text-anchor="middle" font-size="26" fill="#5B6B66">Groceries</text>
+      <text id="tagVal" x="0" y="95" text-anchor="middle" font-size="64" font-weight="600" fill="#E5484D">₹100</text>
+    </g>
+    <text id="tagYear" x="0" y="190" text-anchor="middle" font-size="26" fill="#5B6B66">Today</text>
+  </g>
+
+  <!-- chart -->
+  <g id="chart" opacity="0">
+    <g id="bars"></g>
+    <line x1="1020" y1="900" x2="1800" y2="900" stroke="#C9D6D1" stroke-width="4" stroke-linecap="round"/>
+    <text x="1053" y="945" text-anchor="middle" font-size="24" fill="#5B6B66">Year 1</text>
+    <text x="1775" y="945" text-anchor="middle" font-size="24" fill="#5B6B66">Year 20</text>
+    <g transform="translate(1040 300)">
+      <rect width="22" height="22" rx="5" fill="#BFE3D9"/>
+      <text x="34" y="19" font-size="24" fill="#5B6B66">What you put in</text>
+      <rect x="260" width="22" height="22" rx="5" fill="#0E7C66"/>
+      <text x="294" y="19" font-size="24" fill="#5B6B66">Growth</text>
+    </g>
+  </g>
+
+  <!-- summary stats -->
+  <g id="stats"></g>
+
+  <!-- CTA -->
+  <g id="cta" opacity="0">
+    <rect x="160" y="640" width="330" height="96" rx="48" fill="#13302A"/>
+    <text x="325" y="700" text-anchor="middle" font-size="34" font-weight="500" fill="#fff">Start a SIP</text>
+  </g>
+
+  <!-- mascot: Sprout, a coin with a leaf -->
+  <g id="mascot">
+    <g id="mBody">
+      <g id="sapling">
+        <path id="stem" d="M0 -78 L0 -112" stroke="#0E7C66" stroke-width="8" stroke-linecap="round"/>
+        <path id="leafMain" d="M0 0 C18 -30 54 -32 72 -10 C52 6 20 8 0 0Z" fill="url(#ns-leaf)" transform="translate(0 -110)"/>
+        <path id="leafB" d="M0 0 C-18 -30 -54 -32 -72 -10 C-52 6 -20 8 0 0Z" fill="url(#ns-leaf2)" transform="translate(0 -100) scale(.8)"/>
+        <path id="leafC" d="M0 0 C12 -22 40 -26 54 -8 C38 4 14 6 0 0Z" fill="url(#ns-leaf2)" transform="translate(0 -140) rotate(-40) scale(0)"/>
+      </g>
+      
+    <path d="M0 -84 C50 -84 86 -50 86 -2 C86 48 50 78 0 78 C-50 78 -86 48 -86 -2 C-86 -50 -50 -84 0 -84Z" fill="url(#ns-bub)"/>
+    <path d="M-58 -38 C-52 -62 -28 -74 -6 -74" stroke="#fff" stroke-width="12" stroke-linecap="round" fill="none" opacity=".55"/><circle cx="-63" cy="-16" r="5.5" fill="#fff" opacity=".55"/>
+    
+    <ellipse cx="-46" cy="20" rx="13" ry="8" fill="#FF6F8E" opacity=".5" filter="url(#ns-soft)"/>
+    <ellipse cx="46" cy="20" rx="13" ry="8" fill="#FF6F8E" opacity=".5" filter="url(#ns-soft)"/>
+      <g id="eyesOpen">
+        <ellipse id="eyeL" cx="-22" cy="-6" rx="11" ry="15" fill="url(#ns-deye)"/><circle cx="-18" cy="-12" r="4.2" fill="#fff"/><circle cx="-26" cy="2" r="1.8" fill="#fff" opacity=".7"/>
+        <ellipse id="eyeR" cx="22" cy="-6" rx="11" ry="15" fill="url(#ns-deye)"/><circle cx="26" cy="-12" r="4.2" fill="#fff"/><circle cx="18" cy="2" r="1.8" fill="#fff" opacity=".7"/>
+      </g>
+      <g id="eyesShut" opacity="0" stroke="#13302A" stroke-width="5" stroke-linecap="round" fill="none">
+        <path d="M-34 -6 q10 8 20 0"/><path d="M14 -6 q10 8 20 0"/>
+      </g>
+      <path id="smile" d="M-18 22 q18 18 36 0" stroke="#13302A" stroke-width="5" stroke-linecap="round" fill="none"/>
+      <path id="worry" d="M-14 30 q14 -10 28 0" stroke="#13302A" stroke-width="5" stroke-linecap="round" fill="none" opacity="0"/>
+      <path id="sweat" d="M70 -60 q-12 18 0 26 q12 -8 0 -26Z" fill="#7CC4F0" opacity="0"/>
+    </g>
+  </g>
+  <g id="zzz" font-size="40" font-weight="600" fill="#9FB0AA"></g>
+
+  <!-- island -->
+  <g id="island">
+    <rect id="islRect" x="850" y="34" width="220" height="56" rx="28" fill="#000"/>
+    <g id="islContent" opacity="0">
+      <circle id="islDot" cx="0" cy="76" r="9" fill="#F5A524"/>
+      <text id="islLabel" x="0" y="86" font-size="28" fill="#A9B5B1"></text>
+      <text id="islValue" x="0" y="86" font-size="28" font-weight="600" fill="#fff" text-anchor="end"></text>
+    </g>
+  </g>
+
+  <!-- footnote + statutory disclaimer -->
+  <text id="foot" x="1800" y="1020" text-anchor="end" font-size="22" fill="#7A8A85" opacity="0">*Illustration assumes 12% annual returns. Returns are not guaranteed.</text>
+  <text id="disc" x="960" y="1020" text-anchor="middle" font-size="26" fill="#13302A" opacity="0">Mutual Fund investments are subject to market risks, read all scheme related documents carefully.</text>
+</svg><button type="button" class="fplay" aria-label="Play"></button></div>
+      <div class="fbar"><i></i></div>
+      <div class="fmeta"><div><h3>The power of compounding</h3><p>Why ₹1,000 shouldn't sit still.</p></div><span>0:33</span></div>
+    </article>
+    <article class="fcard" data-film="1">
+      <div class="fscreen"><svg viewBox="0 0 1920 1080" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="How a mutual fund spreads your money across many companies"></svg><button type="button" class="fplay" aria-label="Play"></button></div>
+      <div class="fbar"><i></i></div>
+      <div class="fmeta"><div><h3>Mutual funds, simply</h3><p>One fund, many companies, run by experts.</p></div><span>0:23</span></div>
+    </article>
+    <article class="fcard" data-film="2">
+      <div class="fscreen"><svg viewBox="0 0 1920 1080" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Turning someday savings into named goals with dates"></svg><button type="button" class="fplay" aria-label="Play"></button></div>
+      <div class="fbar"><i></i></div>
+      <div class="fmeta"><div><h3>Give every rupee a job</h3><p>How goals turn saving into a plan.</p></div><span>0:23</span></div>
+    </article>
+    <article class="fcard" data-film="3">
+      <div class="fscreen"><svg viewBox="0 0 1920 1080" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Starting at 25 versus 35 with the same monthly SIP"></svg><button type="button" class="fplay" aria-label="Play"></button></div>
+      <div class="fbar"><i></i></div>
+      <div class="fmeta"><div><h3>Start early</h3><p>What ten extra years can do.</p></div><span>0:24</span></div>
+    </article>
+    <article class="fcard" data-film="4">
+      <div class="fscreen"><svg viewBox="0 0 1920 1080" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="How a SIP buys more units when prices fall"></svg><button type="button" class="fplay" aria-label="Play"></button></div>
+      <div class="fbar"><i></i></div>
+      <div class="fmeta"><div><h3>Markets fall. SIPs keep buying.</h3><p>Why dips can work in your favour.</p></div><span>0:24</span></div>
+    </article>
+  </div>
+  <div class="dots" id="reel-dots"></div>
+</section>
+
+<!-- process -->
+<section id="process">
+  <div class="wrap">
+    <h2 style="max-width:14ch">From a goal to a running SIP, in six steps.</h2>
+    <div class="story">
+      <div class="story-vis" aria-hidden="true">
+        <div class="phone"><div class="phone-in">
+          <div class="island"></div>
+          <div class="view on" data-v="0">
+            <div class="t">Your risk profile</div>
+            <div class="big">Moderate</div>
+            <div class="card"><div class="row"><span>Suggested mix</span><span class="pill">Balanced</span></div>
+              <div class="mix"><i style="width:60%;background:#0E7C66"></i><i style="width:30%;background:#BFE3D9"></i><i style="width:10%;background:#F5A524"></i></div>
+              <div class="row" style="margin-top:10px;font-size:13px;color:#5B6B66"><span>Equity 60</span><span>Debt 30</span><span>Gold 10</span></div></div>
+            <div class="card">Comfortable with short dips for long-term growth.</div>
+          </div>
+          <div class="view" data-v="1">
+            <div class="t">Goal</div>
+            <div class="big">Aarav's college, 2038</div>
+            <div class="card"><div class="row"><span>Amount needed</span><b>₹25 L</b></div></div>
+            <div class="card"><div class="row"><span>Time left</span><b>12 years</b></div></div>
+            <div class="card" style="background:#13302A;color:#fff;box-shadow:none"><div class="row"><span>Monthly SIP</span><b>₹9,800</b></div></div>
+          </div>
+          <div class="view" data-v="2">
+            <div class="t">Suggested allocation</div>
+            <div class="big">Three funds, one plan</div>
+            <div class="card"><div class="row"><span>Flexi cap fund</span><b>40%</b></div></div>
+            <div class="card"><div class="row"><span>Large cap index fund</span><b>30%</b></div></div>
+            <div class="card"><div class="row"><span>Short duration debt fund</span><b>30%</b></div></div>
+          </div>
+          <div class="view" data-v="3">
+            <div class="t">KYC</div>
+            <div class="big">You're ready to invest</div>
+            <div class="card"><div class="row"><span>PAN</span><span class="pill">Verified</span></div></div>
+            <div class="card"><div class="row"><span>Aadhaar</span><span class="pill">Verified</span></div></div>
+            <div class="card"><div class="row"><span>Bank mandate</span><span class="pill">Linked</span></div></div>
+          </div>
+          <div class="view" data-v="4">
+            <div class="t">Approve transaction</div>
+            <div class="big">Start ₹9,800 monthly SIP?</div>
+            <div class="card">The money goes from your bank straight to the fund through NSE. We never hold it.</div>
+            <div class="card"><div class="row"><span>OTP sent to</span><b>+91 ••••• •4186</b></div></div>
+            <div class="okbtn">Approve with OTP</div>
+          </div>
+          <div class="view" data-v="5">
+            <div class="t">Quarterly review</div>
+            <div class="big">On track</div>
+            <div class="card"><svg viewBox="0 0 260 90" width="100%"><path d="M0 80 C40 70 60 74 90 58 S150 50 180 34 S230 20 260 8" fill="none" stroke="#0E7C66" stroke-width="4" stroke-linecap="round"/><path d="M0 80 L260 44" stroke="#BFE3D9" stroke-width="3" stroke-dasharray="6 6"/></svg></div>
+            <div class="card"><div class="row"><span>Rebalance needed</span><b>No</b></div></div>
+          </div>
+        </div></div>
+      </div>
+      <div class="steps">
+        <div class="step on" data-s="0"><div class="n">Step 1</div><h3>Risk profiling</h3><p>We assess how much ups and downs you can live with, and find the asset mix that fits your goals.</p></div>
+        <div class="step" data-s="1"><div class="n">Step 2</div><h3>Analyse the potential</h3><p>With your risk profile clear, we work out how much to invest and for how long to reach each milestone.</p></div>
+        <div class="step" data-s="2"><div class="n">Step 3</div><h3>Suggest the right funds</h3><p>Using data and strong fundamentals, we recommend funds and an allocation that match what you're working towards.</p></div>
+        <div class="step" data-s="3"><div class="n">Step 4</div><h3>Get ready to invest</h3><p>KYC with your PAN and Aadhaar, and you're investment-ready in no time.</p></div>
+        <div class="step" data-s="4"><div class="n">Step 5</div><h3>Invest with ease</h3><p>Every transaction needs your approval by OTP or email. We can set things up, but the final say is always yours.</p></div>
+        <div class="step" data-s="5"><div class="n">Step 6</div><h3>Monitoring</h3><p>Proactive reviews keep your portfolio optimised and your goals on track, year after year.</p></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- do / don't -->
+<section style="padding-top:60px">
+  <div class="wrap">
+    <h2>What we do. What we won't.</h2>
+    <div class="two">
+      <div class="col do">
+        <h3>We do</h3>
+        <div class="item"><b>Strategy</b><p>Define clear goals, build a long-term plan and a personal portfolio to fund them.</p></div>
+        <div class="item"><b>Right asset allocation</b><p>Keep your mix balanced through sector shifts, corrections and economic cycles.</p></div>
+        <div class="item"><b>Behavioural guidance</b><p>Building the plan is easy. Sticking to it through fads and fears is where we help most.</p></div>
+      </div>
+      <div class="col dont">
+        <h3>We won't</h3>
+        <div class="item"><b>Churn your portfolio</b><p>Reshuffling to chase short-lived trends usually does more harm than good.</p></div>
+        <div class="item"><b>Sell get-rich-quick schemes</b><p>Real growth comes from consistency, discipline and compounding over time.</p></div>
+        <div class="item"><b>Time the market</b><p>Time in the market beats timing the market. We don't chase tops and bottoms.</p></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- calculator -->
+<section id="calculator" style="padding-top:60px">
+  <div class="wrap">
+    <h2>Run the numbers.</h2>
+    <p class="lede" style="margin-top:18px">Move the sliders to see what a monthly SIP could become.</p>
+    <div class="calc">
+      <div class="calc-in">
+        <div class="field"><div class="top"><label for="c-amt">Monthly SIP</label><output id="o-amt"></output></div>
+          <input type="range" id="c-amt" min="500" max="100000" step="500" value="5000"></div>
+        <div class="field"><div class="top"><label for="c-yrs">Years invested</label><output id="o-yrs"></output></div>
+          <input type="range" id="c-yrs" min="1" max="40" step="1" value="15"></div>
+        <div class="field"><div class="top"><label for="c-ret">Expected return a year</label><output id="o-ret"></output></div>
+          <input type="range" id="c-ret" min="4" max="16" step="0.5" value="12"></div>
+      </div>
+      <div class="calc-out" aria-live="polite">
+        <div class="result">
+          <div class="k">Estimated value</div>
+          <div class="v" id="r-val"></div>
+          <div class="split">
+            <div><span class="sw" style="background:#BFE3D9"></span>You invest<b id="r-inv"></b></div>
+            <div><span class="sw" style="background:#0E7C66"></span>Estimated gains<b id="r-gain"></b></div>
+          </div>
+        </div>
+        <div class="cbars" id="r-bars" aria-hidden="true"></div>
+        <p class="fine">For illustration only. Returns are not guaranteed and actual returns will vary with markets.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- fees -->
+<section id="fees" style="padding-top:60px">
+  <div class="wrap">
+    <div class="fee">
+      <div class="amt">₹0<small>advice fee</small></div>
+      <p class="lede">We're paid a small trail commission by fund houses, built into the fund's expense ratio as per AMFI rules. It rises when your investments grow and falls when they don't, so we're always in the same boat.</p>
+      <a class="btn btn-dark" href="#contact">Book a free consultation</a>
+    </div>
+    <div class="nums4">
+      <div class="num"><b>₹0</b><p>to talk to us, plan with us, or review your portfolio</p></div>
+      <div class="num"><b>100%</b><p>of investments held in your own name</p></div>
+      <div class="num"><b>1</b><p>OTP from you before any transaction goes through</p></div>
+      <div class="num"><b>6</b><p>steps from first chat to a running SIP</p></div>
+    </div>
+  </div>
+</section>
+
+<!-- partners -->
+<section style="padding:80px 0">
+  <div class="wrap center"><h3 style="font-size:24px">Funds from India's leading AMCs</h3></div>
+  <div class="marquee"><div class="track-m" id="hw-amc"></div></div>
+</section>
+
+<!-- faq -->
+<section id="faq" style="padding-top:60px">
+  <div class="wrap">
+    <h2 class="center">Questions.</h2>
+    <div class="faq">
+      <details><summary>What do you actually do for me?</summary>
+        <p>We understand your goals and comfort with risk, choose funds that match your time horizon, track your investments and rebalance when needed. No jargon, just clear advice, one plan, one SIP, one step at a time.</p></details>
+      <details><summary>How safe is my money with HappyWealth?</summary>
+        <p>We never hold or handle your money. Investments are made in your name and money moves from your bank account to the fund through NSE. Every transaction needs your approval by email or mobile OTP.</p>
+        <p>You can track the same folios independently on NSE, CAMS and MFCentral. Mutual funds are regulated by SEBI and AMFI.</p></details>
+      <details><summary>Why mutual funds over other products?</summary>
+        <p>They're run by experienced fund managers, let you diversify with small amounts, and can be withdrawn fully or partly when you need the money. Professionals handle the portfolio so you don't have to track markets every day.</p></details>
+      <details><summary>What's your value addition?</summary>
+        <p>Most long-term success comes down to four things: goal clarity, the right asset allocation, monitoring and diversification. We help you get all four right and stay with them.</p></details>
+      <details><summary>How do you earn, and what do you charge?</summary>
+        <p>There's no fee for consultation or advice. We earn a small commission paid by fund houses from the fund's expense ratio, as per AMFI rules. It grows only when your investments grow.</p></details>
+      <details><summary>What is a SIP?</summary>
+        <p>A Systematic Investment Plan is like a recurring deposit, except a fixed amount goes into a mutual fund every month by auto-debit. Investing through both ups and downs builds wealth steadily and with discipline.</p></details>
+      <details><summary>What are expense ratio and exit load?</summary>
+        <p>The expense ratio is the yearly fee a fund house charges to run the fund. It's already adjusted in the NAV, and all displayed returns are after it.</p>
+        <p>An exit load is a fee charged only if you redeem within a set period. Long-term investors usually don't pay it.</p></details>
+    </div>
+  </div>
+</section>
+
+<!-- contact -->
+<section id="contact" style="padding-top:60px">
+  <div class="wrap contact">
+    <div>
+      <h2 style="font-size:clamp(34px,4vw,54px)">Your HappyWealth journey starts here.</h2>
+      <p class="lede" style="margin-top:20px">Tell us what you're saving for. We'll come back with a plan that's clear about the amount, the time and the risk.</p>
+      <div class="ways">
+        <a class="way" href="tel:+918639074186"><span>Call</span><b>+91 86390 74186</b></a>
+        <a class="way" href="mailto:contact@happywealth.in"><span>Email</span><b>contact@happywealth.in</b></a>
+        <a class="way" href="https://wa.me/918639074186"><span>WhatsApp</span><b>Message us</b></a>
+      </div>
+    </div>
+    <div class="formbox" id="hw-form">
+      <label for="f-name">Your name</label><input id="f-name" autocomplete="name">
+      <label for="f-phone">Phone number</label><input id="f-phone" type="tel" autocomplete="tel">
+      <label for="f-mail">Email</label><input id="f-mail" type="email" autocomplete="email">
+      <label for="f-msg">What are you planning for?</label><textarea id="f-msg" placeholder="For example, my daughter's education in 2035"></textarea>
+      <button class="btn btn-dark" type="button" id="f-send">Request a call back</button>
+      <p class="sent" id="f-sent">Thanks. We'll call you back within one working day.</p>
+    </div>
+  </div>
+</section>
+
+
+
+
+<!-- meet sprout -->
+<section class="meet2" id="meet">
+  <div class="wrap center">
+    <h2>Meet Sprout.</h2>
+    <p class="lede">Most money sites are just numbers. This one comes with a roommate. He cheers when markets rise, keeps calm when they dip, gets fed on SIP day and jumps for joy when you reach a goal. Go on, poke him.</p>
+  </div>
+  <div class="pg-stage" id="pg-stage">
+    <div class="bubble" id="pg-bubble" aria-live="polite"></div>
+    <svg viewBox="-400 -250 800 370" class="pg-svg" aria-hidden="true">
+      <line x1="-390" y1="112" x2="390" y2="112" stroke="#D5DEDA" stroke-width="2"/>
+      <ellipse id="pg-shadow" cx="0" cy="106" rx="70" ry="10" fill="#13302A" opacity=".14"/>
+      <g id="pg-fx"></g>
+      <g id="pg-root"><g id="pg-squash" class="fb">
+        <g class="sap"><path d="M0 -78 L0 -118" stroke="#0E7C66" stroke-width="8" stroke-linecap="round"/>
+            <path d="M0 -116 C18 -146 54 -148 72 -126 C52 -110 20 -108 0 -116Z" fill="url(#ns-leaf)"/>
+            <path d="M0 -104 C-14 -128 -44 -130 -58 -112 C-42 -100 -16 -98 0 -104Z" fill="url(#ns-leaf2)"/></g>
+        
+    <path d="M0 -84 C50 -84 86 -50 86 -2 C86 48 50 78 0 78 C-50 78 -86 48 -86 -2 C-86 -50 -50 -84 0 -84Z" fill="url(#ns-bub)"/>
+    <path d="M-58 -38 C-52 -62 -28 -74 -6 -74" stroke="#fff" stroke-width="12" stroke-linecap="round" fill="none" opacity=".55"/><circle cx="-63" cy="-16" r="5.5" fill="#fff" opacity=".55"/>
+    
+    <ellipse cx="-46" cy="20" rx="13" ry="8" fill="#FF6F8E" opacity=".5" filter="url(#ns-soft)"/>
+    <ellipse cx="46" cy="20" rx="13" ry="8" fill="#FF6F8E" opacity=".5" filter="url(#ns-soft)"/>
+        <g id="pg-eyes"><g id="pg-blink" class="fb"><ellipse cx="-22" cy="-6" rx="11" ry="15" fill="url(#ns-deye)"/><circle cx="-18" cy="-12" r="4.2" fill="#fff"/><circle cx="-26" cy="2" r="1.8" fill="#fff" opacity=".7"/><ellipse cx="22" cy="-6" rx="11" ry="15" fill="url(#ns-deye)"/><circle cx="26" cy="-12" r="4.2" fill="#fff"/><circle cx="18" cy="2" r="1.8" fill="#fff" opacity=".7"/></g></g>
+        <g id="pg-shut" opacity="0" stroke="#13302A" stroke-width="5" stroke-linecap="round" fill="none"><path d="M-34 -6 q10 8 20 0"/><path d="M14 -6 q10 8 20 0"/></g>
+        <g id="pg-smile"><path d="M-18 22 q18 18 36 0" stroke="#13302A" stroke-width="5" stroke-linecap="round" fill="none"/></g>
+        <g id="pg-open" opacity="0"><path d="M-22 16 Q0 50 22 16 Q0 24 -22 16Z" fill="url(#ns-mouth)" filter="url(#ns-esh)"/><path d="M-10 31 Q0 40 10 31 Q0 26 -10 31Z" fill="#FF7E8A"/></g>
+        <path id="pg-worry" d="M-14 30 q14 -10 28 0" stroke="#13302A" stroke-width="5" stroke-linecap="round" fill="none" opacity="0"/>
+        <g id="pg-shades" opacity="0">
+          <rect x="-52" y="-26" width="44" height="36" rx="14" fill="#13302A"/><rect x="8" y="-26" width="44" height="36" rx="14" fill="#13302A"/>
+          <path d="M-8 -14 q8 -5 16 0" stroke="#13302A" stroke-width="4" fill="none"/>
+          <path d="M-42 -16 h12 M16 -16 h12" stroke="#fff" stroke-opacity=".5" stroke-width="3" stroke-linecap="round"/>
+        </g>
+        <path id="pg-sweat" d="M70 -60 q-12 18 0 26 q12 -8 0 -26Z" fill="#7CC4F0" opacity="0"/>
+      </g></g>
+    </svg>
+  </div>
+  <div class="wrap">
+    <div class="react" role="group" aria-label="Make Sprout react">
+      <button type="button" data-act="poke">👉 Poke</button>
+      <button type="button" data-act="up">📈 Markets up</button>
+      <button type="button" data-act="dip">📉 Market dip</button>
+      <button type="button" data-act="sip">💸 SIP day</button>
+      <button type="button" data-act="review">🔔 Review time</button>
+      <button type="button" data-act="goal">🎯 Goal reached</button>
+      <button type="button" data-act="bed">🌙 Bedtime</button>
+    </div>
+  </div>
+</section>
+
+<!-- closer -->
+<section class="closer2" id="closer">
+  <div class="wrap center">
+    <h2>Give your money<br><span class="grad">something to do.</span></h2>
+    <div class="btns">
+      <a class="btn btn-dark btn-lg" href="#contact">Book a free consultation</a>
+      <a class="btn btn-line btn-lg" href="https://wa.me/918639074186">Chat on WhatsApp</a>
+    </div>
+  </div>
+  <div class="scene" aria-hidden="true">
+    <div class="wordmark">HappyWealth</div>
+    <svg class="bed daysc" id="dayscene" viewBox="0 0 560 300" aria-label="Sprout watering a money plant">
+      <defs>
+        <radialGradient id="sunglow"><stop offset="0" stop-color="#FFE7A8" stop-opacity=".95"/><stop offset="1" stop-color="#FFE7A8" stop-opacity="0"/></radialGradient>
+      </defs>
+      <circle cx="500" cy="40" r="120" fill="url(#sunglow)" class="glow"/>
+      <circle cx="500" cy="40" r="24" fill="#FBC86A"/>
+      <ellipse cx="280" cy="292" rx="250" ry="7" fill="#13302A" opacity=".07"/>
+      <ellipse cx="170" cy="286" rx="52" ry="7" fill="#13302A" opacity=".12"/>
+      <!-- money plant -->
+      <g id="mp">
+        <path id="mp-stem" d="M360 240 C352 214 372 196 360 172 C351 154 365 142 360 130" fill="none" stroke="#0E7C66" stroke-width="5" stroke-linecap="round" stroke-dasharray="120" stroke-dashoffset="120"/>
+        <g id="mp-bud" transform="translate(360 131)" opacity="0"><path d="M0 1 C-5 -5 -5 -13 1 -16 C5 -10 4 -4 0 1Z" fill="#3DB394"/><path d="M0 1 C4 -4 9 -6 11 -4 C8 -1 4 1 0 1Z" fill="#1A9A7F"/></g>
+        <g class="mp-leaf" data-i="0" transform="translate(358 226)"><path d="M0 0 C10 -16 30 -14 28 2 C26 14 8 14 0 0Z" fill="#1A9A7F"/></g>
+        <g class="mp-leaf" data-i="1" transform="translate(362 196) scale(-1 1)"><path d="M0 0 C10 -16 30 -14 28 2 C26 14 8 14 0 0Z" fill="#0E7C66"/></g>
+        <g class="mp-leaf" data-i="2" transform="translate(360 166)"><path d="M0 0 C10 -16 30 -14 28 2 C26 14 8 14 0 0Z" fill="#1A9A7F"/></g>
+        <g class="mp-leaf" data-i="3" transform="translate(360 136) scale(-1 1)"><path d="M0 0 C10 -16 30 -14 28 2 C26 14 8 14 0 0Z" fill="#0E7C66"/></g>
+        <g class="mp-coin" data-i="0" transform="translate(388 214)"><circle r="11" fill="#F5A524" stroke="#E0901A" stroke-width="3"/><text y="4.5" text-anchor="middle" font-size="12" font-weight="700" fill="#9A5A06">₹</text></g>
+        <g class="mp-coin" data-i="1" transform="translate(334 186)"><circle r="11" fill="#F5A524" stroke="#E0901A" stroke-width="3"/><text y="4.5" text-anchor="middle" font-size="12" font-weight="700" fill="#9A5A06">₹</text></g>
+        <g class="mp-coin" data-i="2" transform="translate(386 152)"><circle r="11" fill="#F5A524" stroke="#E0901A" stroke-width="3"/><text y="4.5" text-anchor="middle" font-size="12" font-weight="700" fill="#9A5A06">₹</text></g>
+      </g>
+      <path d="M326 248 H394 L386 290 H334Z" fill="#E0901A"/>
+      <rect x="320" y="238" width="80" height="14" rx="5" fill="#F5A524"/>
+      <!-- jar -->
+      <rect id="jar-fill" x="450" y="214" width="60" height="74" rx="8" fill="#F5A524" opacity=".9" style="transform-box:fill-box;transform-origin:50% 100%;transform:scaleY(0);transition:transform .8s cubic-bezier(.4,0,.2,1)"/>
+      <rect x="444" y="200" width="72" height="92" rx="16" fill="#0E7C66" fill-opacity=".05" stroke="#C9D6D1" stroke-width="3"/>
+      <rect x="450" y="190" width="60" height="14" rx="5" fill="#E7EEEB" stroke="#C9D6D1" stroke-width="3"/>
+      <text x="480" y="252" text-anchor="middle" font-size="14" font-weight="700" fill="#5B6B66" opacity=".85">Goals</text>
+      <g id="fly" opacity="0"><circle r="11" fill="#F5A524" stroke="#E0901A" stroke-width="3"/><text y="4.5" text-anchor="middle" font-size="12" font-weight="700" fill="#9A5A06">₹</text></g>
+      <!-- drops -->
+      <g fill="#7CC4F0"><path class="drop" d="M0 -8 q-6 9 0 13 q6 -4 0 -13Z" opacity="0"/><path class="drop" d="M0 -8 q-6 9 0 13 q6 -4 0 -13Z" opacity="0"/><path class="drop" d="M0 -8 q-6 9 0 13 q6 -4 0 -13Z" opacity="0"/></g>
+      <!-- sprout with watering can -->
+      <g id="day-sprout" style="cursor:pointer" transform="translate(170 205)">
+        <g id="ds-body" class="bs-body">
+          <use href="#sprout" x="-72" y="-144" width="144" height="216"/>
+          <g id="can" transform="translate(52 6)">
+            <g class="can-rot">
+              <path d="M10 -18 Q32 -50 54 -18" stroke="#0E7C66" stroke-width="7" fill="none" stroke-linecap="round"/>
+              <rect x="0" y="-20" width="64" height="44" rx="12" fill="#1A9A7F"/>
+              <path d="M60 -8 L104 -34" stroke="#1A9A7F" stroke-width="10" stroke-linecap="round"/>
+              <ellipse cx="106" cy="-36" rx="7" ry="10" fill="#0E7C66" transform="rotate(-30 106 -36)"/>
+            </g>
+          </g>
+        </g>
+      </g>
+      <text x="250" y="78" font-size="22" font-weight="500" fill="#5B6B66" id="day-time">it's 10:30 am…</text>
+      <text x="250" y="104" font-size="16" fill="#9FB0AA" id="day-status"></text>
+    </svg>
+    <svg class="bed" id="bedscene" viewBox="0 0 560 300">
+      <defs>
+        <radialGradient id="bedglow"><stop offset="0" stop-color="#FFE3A3" stop-opacity=".9"/><stop offset="1" stop-color="#FFE3A3" stop-opacity="0"/></radialGradient>
+        <linearGradient id="bedblank" x1="0" x2="1"><stop offset="0" stop-color="#0E7C66"/><stop offset=".55" stop-color="#1A9A7F"/><stop offset="1" stop-color="#F5A524"/></linearGradient>
+      </defs>
+      <circle cx="470" cy="170" r="130" fill="url(#bedglow)" class="glow" id="bed-glow"/>
+      <rect x="40" y="110" width="262" height="160" rx="34" fill="#2C5249"/>
+      <g transform="translate(171 196) scale(.8)" id="bed-sprout" style="cursor:pointer">
+<g id="bs-body" class="bs-body">
+        
+    <path d="M0 -84 C50 -84 86 -50 86 -2 C86 48 50 78 0 78 C-50 78 -86 48 -86 -2 C-86 -50 -50 -84 0 -84Z" fill="url(#ns-bub)"/>
+    <path d="M-58 -38 C-52 -62 -28 -74 -6 -74" stroke="#fff" stroke-width="12" stroke-linecap="round" fill="none" opacity=".55"/><circle cx="-63" cy="-16" r="5.5" fill="#fff" opacity=".55"/>
+    
+    <ellipse cx="-46" cy="20" rx="13" ry="8" fill="#FF6F8E" opacity=".5" filter="url(#ns-soft)"/>
+    <ellipse cx="46" cy="20" rx="13" ry="8" fill="#FF6F8E" opacity=".5" filter="url(#ns-soft)"/>
+        <g id="bs-shut" stroke="#13302A" stroke-width="5" stroke-linecap="round" fill="none"><path d="M-34 -6 q10 8 20 0"/><path d="M14 -6 q10 8 20 0"/></g>
+        <g id="bs-open" class="bs-open" opacity="0"><ellipse cx="-22" cy="-6" rx="10" ry="14" fill="url(#ns-deye)"/><circle cx="-18" cy="-12" r="4" fill="#fff"/><ellipse cx="22" cy="-6" rx="10" ry="14" fill="url(#ns-deye)"/><circle cx="26" cy="-12" r="4" fill="#fff"/></g>
+        <ellipse id="bs-yawn" cx="0" cy="28" rx="9" ry="11" fill="#13302A" opacity="0"/>
+        <path id="bs-smile" d="M-12 24 q12 10 24 0" stroke="#13302A" stroke-width="5" stroke-linecap="round" fill="none"/>
+        <path d="M-64 -48 Q0 -100 66 -50 Q46 -112 112 -132 Q34 -160 -64 -48Z" fill="#1A9A7F"/>
+        <path d="M-18 -84 Q30 -126 74 -116 M20 -94 Q56 -128 92 -126" stroke="#BFE3D9" stroke-width="7" fill="none" stroke-linecap="round"/>
+        <path d="M-68 -46 Q0 -96 70 -48" stroke="#fff" stroke-width="14" fill="none" stroke-linecap="round"/>
+        <circle cx="112" cy="-132" r="15" fill="#fff"/>
+</g>
+      </g>
+      <rect x="20" y="236" width="302" height="22" rx="11" fill="#fff" stroke="#DDE5E2" stroke-width="2"/>
+      <path d="M26 222 C80 206 150 214 210 208 S300 210 318 218 L318 254 q-12 12 -24 0 q-12 12 -24 0 q-12 12 -24 0 q-12 12 -24 0 q-12 12 -24 0 q-12 12 -24 0 q-12 12 -24 0 q-12 12 -24 0 q-12 12 -24 0 q-12 12 -24 0 q-12 12 -24 0 q-12 12 -24 0 Z" fill="url(#bedblank)"/>
+      <rect x="34" y="262" width="12" height="34" rx="4" fill="#13302A"/><rect x="296" y="262" width="12" height="34" rx="4" fill="#13302A"/>
+      <rect x="420" y="232" width="104" height="66" rx="10" fill="#13302A"/>
+      <rect x="446" y="262" width="52" height="5" rx="2.5" fill="#3A5A52"/>
+      <rect x="468" y="196" width="8" height="36" fill="#9FB0AA"/>
+      <ellipse cx="472" cy="232" rx="22" ry="5" fill="#9FB0AA"/>
+      <path id="bed-shade" d="M446 196 L452 160 H492 L498 196 Z" fill="#FBC86A" style="transition:fill .3s"/>
+      <text x="300" y="104" font-size="22" font-weight="500" fill="#5B6B66" id="bed-time">it's 9:41…</text>
+      <text x="300" y="130" font-size="16" fill="#9FB0AA" id="bed-status"></text>
+      <g class="zzz" id="bed-zzz" font-weight="600" fill="#9FB0AA" style="transition:opacity .4s"><text x="250" y="140" font-size="18">z</text><text x="266" y="122" font-size="22">z</text><text x="284" y="102" font-size="26">z</text></g>
+    </svg>
+  </div>
+</section>
+
+</main>
+
+<footer class="site-foot">
+  <div class="legal-line wrap">
+    <p><strong>AMFI Registered Mutual Fund Distributor, ARN-349762, Vignesh Mitta.</strong> Mutual fund investments are subject to market risks. Please read the scheme information and offer documents before investing. Past performance is not indicative of future results.</p>
+  </div>
+  <div class="bar-row">
+    <div class="wrap-wide">
+      <span>© 2026 HappyWealth. All rights reserved.</span>
+      <nav aria-label="Footer">
+        <a href="https://happywealth.in/about-us/">About us</a>
+        <a href="https://happywealth.in/our-investment-process/">Our process</a>
+        <a href="https://happywealth.in/calculators/">Calculators</a>
+        <a href="https://happywealth.in/blogs/">Blogs</a>
+        <a href="https://www.youtube.com/@happywealthofficial">YouTube</a>
+        <a href="https://www.instagram.com/happywealth.in/">Instagram</a>
+        <a href="https://www.amfiindia.com/">AMFI</a>
+        <a href="https://happywealth.in/wp-content/uploads/2025/12/Draft_Admit.pdf">ARN certificate</a>
+        <a href="#contact">Contact</a>
+      </nav>
+    </div>
+  </div>
+</footer>
+
+<a class="wa" href="https://wa.me/918639074186" aria-label="Chat on WhatsApp">
+  <svg viewBox="0 0 24 24" fill="#fff"><path d="M12 2a10 10 0 0 0-8.6 15.1L2 22l5-1.3A10 10 0 1 0 12 2Zm5.3 14.2c-.2.6-1.3 1.2-1.8 1.2-.5.1-1 .2-3.3-.7-2.8-1.1-4.6-4-4.7-4.2-.1-.2-1.1-1.5-1.1-2.9s.7-2 1-2.3c.2-.3.5-.3.7-.3h.5c.2 0 .4 0 .6.5l.8 2c.1.2.1.4 0 .6l-.4.6-.4.4c-.1.1-.3.3-.1.6.2.3.8 1.3 1.7 2.1 1.2 1 2.1 1.3 2.4 1.5.3.1.5.1.6-.1l.9-1c.2-.3.4-.2.7-.1l1.9.9c.3.1.5.2.5.3.1.2.1.7-.1 1.3Z"/></svg>
+</a>
+
+<script>
+/* ---------- film 1 (compounding) ---------- */
+const HWFilm1 = (function(){
+
+const DUR = 33;
+const NS = "http://www.w3.org/2000/svg";
+const $ = id => document.getElementById(id);
+const clamp = (v,a=0,b=1) => Math.min(b, Math.max(a, v));
+const lerp = (a,b,p) => a + (b-a)*p;
+const ease = p => p<.5 ? 4*p*p*p : 1-Math.pow(-2*p+2,3)/2;
+const outBack = p => { const c=1.6; return 1 + (c+1)*Math.pow(p-1,3) + c*Math.pow(p-1,2); };
+const prog = (t,a,b) => clamp((t-a)/(b-a));
+function win(t,a,b,fi=.45,fo=.35){ return Math.min(ease(prog(t,a,a+fi)), 1-ease(prog(t,b-fo,b))); }
+
+// ---------- money maths ----------
+const SIP = 5000, r = 0.01, SCALE = 560/5000000;
+const fv = m => m<=0 ? 0 : SIP*((Math.pow(1+r,m)-1)/r)*(1+r);
+const lakh = v => "₹" + (v/1e5).toFixed(v<1e6 ? 1 : 1) + " L";
+
+// ---------- copy ----------
+const COPY = [
+  [0.7, 4.3, ["This is your ₹1,000."], ["Small, hard-earned, and full of potential."]],
+  [4.3, 9.1, ["You saved it.","Then it sat still."], ["A savings account grows about 3% a year."]],
+  [9.1, 14.2, ["Prices didn't","sit still."], ["At 6% inflation, ₹100 of groceries today","costs about ₹179 in ten years."]],
+  [14.2, 18.6, ["Invest a little,","every month."], ["A SIP puts ₹5,000 to work,","month after month."]],
+  [18.6, 23.2, ["Then let time","do the lifting."], ["Your returns start earning","returns of their own."]],
+  [23.2, 27.6, ["Start small.","Start early."], ["The earlier you begin, the longer","compounding has to work."]],
+  [27.6, DUR+1, ["Your future self","will thank you."], []],
+];
+const copyEls = COPY.map(([a,b,h,s]) => {
+  const g = document.createElementNS(NS,"g");
+  let y = 430 - (h.length-1)*60 + (s.length ? 0 : 40);
+  h.forEach(line => { const t=document.createElementNS(NS,"text");
+    t.setAttribute("x",160); t.setAttribute("y",y); t.setAttribute("font-size",104);
+    t.setAttribute("font-weight",600); t.setAttribute("fill","#13302A"); t.setAttribute("letter-spacing","-2");
+    t.textContent=line; g.appendChild(t); y+=120; });
+  y += 10;
+  s.forEach(line => { const t=document.createElementNS(NS,"text");
+    t.setAttribute("x",164); t.setAttribute("y",y); t.setAttribute("font-size",36);
+    t.setAttribute("fill","#5B6B66"); t.textContent=line; g.appendChild(t); y+=54; });
+  $("copy").appendChild(g); return {a,b,g};
+});
+
+// ---------- bars ----------
+const bars = [];
+for (let k=0;k<20;k++){
+  const x = 1040 + k*38;
+  const inv = document.createElementNS(NS,"rect"), gro = document.createElementNS(NS,"rect");
+  [inv,gro].forEach(el=>{el.setAttribute("x",x); el.setAttribute("width",26); el.setAttribute("rx",4); $("bars").appendChild(el);});
+  inv.setAttribute("fill","#BFE3D9"); gro.setAttribute("fill","#0E7C66");
+  bars.push({inv,gro,hi:60000*(k+1)*SCALE, ht:fv(12*(k+1))*SCALE});
+}
+
+// ---------- stats ----------
+const STATS = [["₹12 lakh","what you put in"],["20 years","how long you stayed invested"],["≈ ₹50 lakh","what it could grow to*"]];
+const statEls = STATS.map(([big,small],i)=>{
+  const g=document.createElementNS(NS,"g"); const y=380+i*190;
+  const a=document.createElementNS(NS,"text"); a.setAttribute("x",1000); a.setAttribute("y",y);
+  a.setAttribute("font-size",76); a.setAttribute("font-weight",600); a.setAttribute("fill", i===2?"#0E7C66":"#13302A");
+  a.setAttribute("letter-spacing","-1.5"); a.textContent=big;
+  const b=document.createElementNS(NS,"text"); b.setAttribute("x",1004); b.setAttribute("y",y+48);
+  b.setAttribute("font-size",30); b.setAttribute("fill","#5B6B66"); b.textContent=small;
+  g.appendChild(a); g.appendChild(b); $("stats").appendChild(g); return g;
+});
+
+// ---------- zzz ----------
+const zs=[0,1,2].map(i=>{const t=document.createElementNS(NS,"text"); t.textContent="z"; $("zzz").appendChild(t); return t;});
+
+// ---------- island content ----------
+const ISL = [
+  [0.3, 4.3, "#F5A524", "Meet Sprout", ()=>"₹1,000"],
+  [4.5, 9.1, "#9FB0AA", "Savings account", ()=>"~3% a year"],
+  [9.3, 14.2, "#E5484D", "Inflation", ()=>"~6% a year"],
+  [14.4, 23.0, "#0E7C66", null, null],          // live SIP counter
+  [23.2, 27.6, "#0E7C66", "In 20 years", ()=>"≈ ₹50 lakh*"],
+  [27.8, DUR+1, "#F5A524", "Sprout", ()=>"Ready when you are"],
+];
+const W_OPEN = 640, W_CLOSED = 220;
+
+function yearsAt(t){ return clamp((t-14.6)/7.4)*20; }
+
+function mascot(t){
+  // returns x, y, scale
+  const home = {x:1380, y:640};
+  if (t < 0.4) return {x:960, y:62, s:.25};
+  if (t < 1.5){ const p=prog(t,.4,1.5); return {x:lerp(960,home.x,ease(p)), y:lerp(62,home.y,outBack(p)), s:lerp(.25,1,ease(p))}; }
+  if (t < 4.5) return {x:home.x, y:home.y + Math.sin((t-1.5)*3)*6, s:1};
+  if (t < 5.3){ const p=prog(t,4.5,5.3); return {x:home.x, y:lerp(home.y,760,ease(p)) - Math.sin(p*Math.PI)*140, s:lerp(1,.9,p)}; }
+  if (t < 9.2) return {x:home.x, y:760 + Math.sin((t-5.3)*1.6)*3, s:.9};
+  if (t < 14.2){ const p=prog(t,9.2,13); return {x:home.x, y:760 + (1-.68/.9)*0 + lerp(0,22,ease(p)), s:lerp(.9,.62,ease(p))}; }
+  if (t < 14.9){ const p=prog(t,14.2,14.9); return {x:lerp(home.x,1053,ease(p)), y:lerp(782,900-46,ease(p)) - Math.sin(p*Math.PI)*220, s:.55}; }
+  if (t < 22.4){ const yp=yearsAt(t);     const k=Math.min(19,Math.floor(yp)); const top=b=>b<0?0:bars[b].ht*ease(clamp(yp-b));
+    const hgt=Math.max(top(k),top(k-1)); const bx=1053+k*38;
+    return {x:bx, y:900 - hgt - 46 - Math.abs(Math.sin(t*7))*8, s:.55}; }
+  if (t < 23.4){ const p=prog(t,22.4,23.4); return {x:lerp(1775,1660,ease(p)), y:lerp(900-560-46,640,ease(p)) - Math.sin(p*Math.PI)*60, s:lerp(.55,1.15,ease(p))}; }
+  if (t < 27.8) return {x:1660, y:640 + Math.sin((t-23.4)*3)*6, s:1.15};
+  { const p=prog(t,27.8,28.8); return {x:lerp(1660,1420,ease(p)), y:lerp(640,600,ease(p)) + Math.sin((t-27.8)*3)*6, s:lerp(1.15,1.35,ease(p))}; }
+}
+
+function render(t){
+  t = ((t % DUR) + DUR) % DUR;
+
+  // copy
+  copyEls.forEach(({a,b,g})=>{
+    const v = win(t,a,b); const inP = ease(prog(t,a,a+.6)); const outP = ease(prog(t,b-.35,b));
+    g.setAttribute("opacity", v);
+    g.setAttribute("transform", `translate(0 ${lerp(36,0,inP) - outP*24})`);
+  });
+
+  // island
+  let open = 0, cfg = null;
+  for (const c of ISL){ const v = win(t,c[0],c[1],.4,.35); if (v>open){open=v; cfg=c;} }
+  const w = lerp(W_CLOSED, W_OPEN, open), h = lerp(56, 84, open);
+  $("islRect").setAttribute("x", 960-w/2); $("islRect").setAttribute("width", w);
+  $("islRect").setAttribute("height", h); $("islRect").setAttribute("rx", h/2);
+  $("islContent").setAttribute("opacity", clamp((open-.6)/.4));
+  if (cfg){
+    let label = cfg[3], value = cfg[4] ? cfg[4]() : "";
+    if (!label){ const yp = yearsAt(t); const yr = Math.max(1, Math.ceil(yp));
+      label = `SIP ₹5,000 a month, year ${yr}`; value = lakh(fv(Math.max(.5,yp)*12)); }
+    $("islDot").setAttribute("cx", 960-W_OPEN/2+44); $("islDot").setAttribute("fill", cfg[2]);
+    $("islLabel").setAttribute("x", 960-W_OPEN/2+68); $("islLabel").textContent = label;
+    $("islValue").setAttribute("x", 960+W_OPEN/2-40); $("islValue").textContent = value;
+  }
+
+  // jar & tag
+  $("jar").setAttribute("opacity", win(t,4.4,14.4,.5,.4));
+  const tagV = win(t,9.4,14.3,.5,.35);
+  $("tag").setAttribute("opacity", tagV);
+  $("tag").setAttribute("transform", `translate(1680 ${lerp(250,380,outBack(prog(t,9.4,10.2)))})`);
+  $("tagSwing").setAttribute("transform", `rotate(${Math.sin((t-9.4)*2.4)*6*Math.exp(-(t-9.4)*.3)})`);
+  const yrs = Math.round(ease(prog(t,10.4,13.2))*10);
+  $("tagVal").textContent = "₹" + Math.round(100*Math.pow(1.06,yrs));
+  $("tagYear").textContent = yrs===0 ? "Today" : `In ${yrs} year${yrs>1?"s":""}`;
+
+  // chart
+  $("chart").setAttribute("opacity", win(t,14.3,23.4,.5,.5));
+  const yp = yearsAt(t);
+  bars.forEach((b,k)=>{
+    const f = ease(clamp(yp-k));
+    const hi = b.hi*f, ht = b.ht*f;
+    b.inv.setAttribute("y", 900-hi); b.inv.setAttribute("height", hi);
+    b.gro.setAttribute("y", 900-ht); b.gro.setAttribute("height", Math.max(0, ht-hi));
+  });
+  $("foot").setAttribute("opacity", win(t,14.8,27.6,.5,.35));
+
+  // stats
+  statEls.forEach((g,i)=>{ const a=23.6+i*.45; const p=ease(prog(t,a,a+.6));
+    g.setAttribute("opacity", Math.min(p, 1-ease(prog(t,27.3,27.7))));
+    g.setAttribute("transform", `translate(${lerp(30,0,p)} 0)`); });
+
+  // CTA
+  const ctaP = ease(prog(t,28.6,29.3));
+  const pulse = t>29.3 ? 1 + Math.max(0,Math.sin((t-29.3)*3.2))*.025 : 1;
+  $("cta").setAttribute("opacity", ctaP);
+  $("cta").setAttribute("transform", `translate(325 688) scale(${lerp(.9,1,ctaP)*pulse}) translate(-325 -688)`);
+  $("disc").setAttribute("opacity", ease(prog(t,28.2,28.8)) * (1-ease(prog(t,DUR-.3,DUR))));
+
+  // mascot
+  const m = mascot(t);
+  const blink = (Math.abs(((t*1000)%3100) - 1550) < 70) ? .1 : 1;
+  const asleep = t>5.6 && t<9.2, worried = t>9.6 && t<14.3;
+  $("mascot").setAttribute("transform", `translate(${m.x} ${m.y}) scale(${m.s})`);
+  $("eyesOpen").setAttribute("opacity", asleep?0:1);
+  $("eyesShut").setAttribute("opacity", asleep?1:0);
+  ["eyeL","eyeR"].forEach(id=>$(id).setAttribute("ry", 15*blink));
+  $("smile").setAttribute("opacity", worried?0:1);
+  $("worry").setAttribute("opacity", worried?1:0);
+  const sw = worried ? ((t-9.6)%1.4)/1.4 : 0;
+  $("sweat").setAttribute("opacity", worried ? 1-sw : 0);
+  $("sweat").setAttribute("transform", `translate(0 ${sw*40})`);
+
+  // sapling grows
+  const g = ease(prog(t,22.8,24.6));
+  $("sapling").setAttribute("transform", `scale(${lerp(1,1.25,g)})`);
+  $("stem").setAttribute("d", `M0 -78 L0 ${lerp(-112,-170,g)}`);
+  $("leafMain").setAttribute("transform", `translate(0 ${lerp(-110,-168,g)}) scale(${lerp(1,1.15,g)})`);
+  $("leafB").setAttribute("transform", `translate(0 ${lerp(-100,-132,g)}) scale(${.8+outBack(prog(t,23.3,24.1))*.25})`);
+  $("leafC").setAttribute("transform", `translate(0 -168) rotate(-60) scale(${outBack(prog(t,23.8,24.6))*1.1})`);
+
+  // zzz
+  zs.forEach((z,i)=>{ const ph = ((t-5.8)/2.1 + i/3) % 1; const on = asleep && t>5.8;
+    z.setAttribute("x", m.x + 60 + ph*50 + i*4); z.setAttribute("y", m.y - 70 - ph*130);
+    z.setAttribute("font-size", 28 + ph*22); z.setAttribute("opacity", on ? Math.sin(ph*Math.PI) : 0); });
+}
+window.render = render;
+window.DURATION = DUR;
+
+
+  return {render, dur:DUR};
+})();
+/* ---------- film engine ---------- */
+const HWFilms = (function(){
+  const NS = "http://www.w3.org/2000/svg";
+  const clamp = (v,a=0,b=1) => Math.min(b, Math.max(a, v));
+  const lerp = (a,b,p) => a + (b-a)*p;
+  const ease = p => p<.5 ? 4*p*p*p : 1-Math.pow(-2*p+2,3)/2;
+  const outBack = p => { const c=1.6; return 1 + (c+1)*Math.pow(p-1,3) + c*Math.pow(p-1,2); };
+  const prog = (t,a,b) => clamp((t-a)/(b-a));
+  const win = (t,a,b,fi=.45,fo=.35) => Math.min(ease(prog(t,a,a+fi)), 1-ease(prog(t,b-fo,b)));
+  const E = (tag,attrs,parent) => { const e=document.createElementNS(NS,tag); for (const k in attrs) e.setAttribute(k,attrs[k]); if (parent) parent.appendChild(e); return e; };
+  const T = (txt,attrs,parent) => { const e=E("text",attrs,parent); e.textContent=txt; return e; };
+  const set = (e,attrs) => { for (const k in attrs) e.setAttribute(k,attrs[k]); };
+  const sprout = parent => { const g=E("g",{},parent); E("use",{href:"#sprout",x:-90,y:-180,width:180,height:270},g); return g; };
+  const inr = v => v>=1e7 ? "₹"+(v/1e7).toFixed(1)+" Cr" : v>=1e5 ? "₹"+Math.round(v/1e5)+" L" : "₹"+Math.round(v).toLocaleString("en-IN");
+  const fv = (P,m,r=.01) => m<=0 ? 0 : P*((Math.pow(1+r,m)-1)/r)*(1+r);
+  const U = {clamp,lerp,ease,outBack,prog,win,E,T,set,sprout,inr,fv};
+
+  function make(svg, spec){
+    const D = spec.dur;
+    E("rect",{width:1920,height:1080,fill:"#FBFCFB"},svg);
+    const copyG = E("g",{},svg);
+    const copy = spec.copy.map(([a,b,h,s])=>{
+      const g=E("g",{},copyG); let y = 430 - (h.length-1)*60 + (s.length?0:40);
+      h.forEach(l=>{ T(l,{x:160,y,"font-size":104,"font-weight":600,fill:"#13302A","letter-spacing":-2},g); y+=120; });
+      y+=10; s.forEach(l=>{ T(l,{x:164,y,"font-size":36,fill:"#5B6B66"},g); y+=54; });
+      return {a,b,g};
+    });
+    const layer = E("g",{},svg);
+    const refs = spec.build(layer, U);
+    const pill = E("g",{},svg);
+    const pr = E("rect",{y:34,fill:"#000"},pill);
+    const pc = E("g",{},pill);
+    const pd = E("circle",{cy:76,r:9},pc);
+    const pl = T("",{y:86,"font-size":28,fill:"#A9B5B1"},pc);
+    const pv = T("",{y:86,"font-size":28,"font-weight":600,fill:"#fff","text-anchor":"end"},pc);
+    const foot = spec.foot ? T(spec.foot[2],{x:1800,y:1020,"text-anchor":"end","font-size":22,fill:"#7A8A85"},svg) : null;
+    const disc = T("Mutual Fund investments are subject to market risks, read all scheme related documents carefully.",
+      {x:960,y:1020,"text-anchor":"middle","font-size":26,fill:"#13302A"},svg);
+    const WO=640, WC=220;
+    function render(t){
+      t = ((t%D)+D)%D;
+      copy.forEach(({a,b,g})=>{ const inP=ease(prog(t,a,a+.6)), outP=ease(prog(t,b-.35,b));
+        set(g,{opacity:win(t,a,b), transform:`translate(0 ${lerp(36,0,inP)-outP*24})`}); });
+      let open=0, cfg=null;
+      for (const c of spec.pill){ const v=win(t,c[0],c[1],.4,.35); if (v>open){open=v;cfg=c;} }
+      const w=lerp(WC,WO,open), h=lerp(56,84,open);
+      set(pr,{x:960-w/2,width:w,height:h,rx:h/2});
+      set(pc,{opacity:clamp((open-.6)/.4)});
+      if (cfg){ set(pd,{cx:960-WO/2+44,fill:cfg[2]}); set(pl,{x:960-WO/2+68}); set(pv,{x:960+WO/2-40});
+        pl.textContent = typeof cfg[3]==="function" ? cfg[3](t) : cfg[3];
+        pv.textContent = typeof cfg[4]==="function" ? cfg[4](t) : cfg[4]; }
+      spec.draw(t, refs, U);
+      if (foot) set(foot,{opacity:win(t,spec.foot[0],spec.foot[1])});
+      set(disc,{opacity:ease(prog(t,D-3.4,D-2.9))*(1-ease(prog(t,D-.3,D)))});
+    }
+    return {render, dur:D};
+  }
+
+  /* ===== Film 2: Mutual funds, simply ===== */
+  const fundsSpec = {
+    dur:23,
+    copy:[
+      [0.6,6.2,["One fund.","Many companies."],["A mutual fund pools money from many","investors and spreads it across","lots of stocks or bonds."]],
+      [6.2,12.3,["If one slips,","the rest hold up."],["Diversification means one bad","company can't sink your savings."]],
+      [12.3,17.7,["Run by experts,","watched by SEBI."],["Professional fund managers invest it,","under strict SEBI and AMFI rules."]],
+      [17.7,24,["Start with a","small SIP."],["Many funds let you begin with","₹500 a month."]],
+    ],
+    pill:[[0.4,6.2,"#0E7C66","Inside one fund","12 companies"],[6.4,12.3,"#E5484D","One stock −10%","Fund −0.8%"],
+          [12.5,17.7,"#0E7C66","Regulated by","SEBI"],[17.9,24,"#F5A524","SIPs from","₹500 a month"]],
+    build(L,U){
+      const {E,T,sprout}=U;
+      L.setAttribute("transform","translate(50 0)");
+      const coins=[...Array(9)].map((_,i)=>E("circle",{r:20,fill:"#F5A524",stroke:"#E0901A","stroke-width":4},L));
+      const basket=E("g",{},L);
+      E("rect",{x:1120,y:380,width:560,height:420,rx:40,fill:"#fff",stroke:"#C9D6D1","stroke-width":6},basket);
+      T("Your mutual fund",{x:1400,y:850,"text-anchor":"middle","font-size":26,fill:"#5B6B66"},basket);
+      const names=["Bank","Pharma","IT","Auto","FMCG","Energy","Cement","Telecom","Metals","Infra","Retail","Power"];
+      const tiles=names.map((n,i)=>{ const x=1150+(i%4)*130, y=420+Math.floor(i/4)*120;
+        const g=E("g",{},L); const r=E("rect",{x,y,width:110,height:100,rx:18,fill:["#E3F1EC","#FFF1D6","#E8EEF9","#F2ECF8"][i%4]},g);
+        T(n,{x:x+55,y:y+58,"text-anchor":"middle","font-size":22,"font-weight":500,fill:"#13302A"},g);
+        const d=T("−10%",{x:x+55,y:y+88,"text-anchor":"middle","font-size":18,"font-weight":600,fill:"#E5484D",opacity:0},g);
+        return {g,r,d,x,y}; });
+      const chips=E("g",{},L);
+      const c1=E("g",{},chips), c2=E("g",{},chips);
+      E("rect",{x:1120,y:290,width:270,height:64,rx:32,fill:"#13302A"},c1);
+      E("path",{d:"M1150 306 l14 -5 l14 5 v12 c0 9 -6 14 -14 17 c-8 -3 -14 -8 -14 -17Z",fill:"#BFE3D9"},c1);
+      T("SEBI regulated",{x:1192,y:331,"font-size":24,"font-weight":500,fill:"#fff"},c1);
+      E("rect",{x:1410,y:290,width:270,height:64,rx:32,fill:"#fff",stroke:"#C9D6D1","stroke-width":3},c2);
+      E("circle",{cx:1446,cy:314,r:9,fill:"#0E7C66"},c2); E("path",{d:"M1430 338 q16 -18 32 0",stroke:"#0E7C66","stroke-width":6,fill:"none","stroke-linecap":"round"},c2);
+      T("Expert manager",{x:1474,y:331,"font-size":24,"font-weight":500,fill:"#13302A"},c2);
+      const m=sprout(L);
+      return {coins,tiles,c1,c2,m};
+    },
+    draw(t,R,U){
+      const {ease,outBack,prog,lerp,set,win}=U;
+      R.coins.forEach((c,i)=>{ const a=.6+i*.18, p=ease(prog(t,a,a+.9));
+        set(c,{cx:lerp(1040+i*85,1400,p), cy:lerp(150+(i%3)*30,590,p)-Math.sin(p*Math.PI)*120, opacity:p<1?1:0}); });
+      R.tiles.forEach((tl,i)=>{ const a=1.6+i*.12, p=outBack(prog(t,a,a+.5));
+        const hit = i===5 && t>7.2 && t<17.8; const hp=ease(prog(t,7.2,7.8));
+        set(tl.g,{opacity:Math.min(1,prog(t,a,a+.3)), transform:`translate(${tl.x+55} ${tl.y+50+(hit?hp*14:0)}) scale(${p}) translate(${-tl.x-55} ${-tl.y-50})`});
+        set(tl.r,{fill: hit ? "#FDECEC" : ["#E3F1EC","#FFF1D6","#E8EEF9","#F2ECF8"][i%4], stroke: hit?"#E5484D":"none","stroke-width":3});
+        set(tl.d,{opacity:hit?hp:0}); });
+      [R.c1,R.c2].forEach((c,i)=>{ const a=12.8+i*.35, p=outBack(prog(t,a,a+.6));
+        set(c,{opacity:Math.min(prog(t,a,a+.3),1-prog(t,22.6,23)), transform:`translate(0 ${lerp(30,0,p)})`}); });
+      const mp=outBack(prog(t,18,18.9));
+      set(R.m,{opacity:prog(t,18,18.2), transform:`translate(${lerp(1800,1760,mp)} ${lerp(500,740,mp)+Math.sin(t*3)*5}) scale(.85)`});
+    }
+  };
+
+  /* ===== Film 3: Give every rupee a job ===== */
+  const GOALS=[["🏡","First home","2030",.41,40],["🎓","Aarav's college","2038",.62,70],["🌴","Retire at 55","2050",.18,85]];
+  const goalsSpec = {
+    dur:23,
+    copy:[
+      [0.6,6.2,["Saving for","“someday”"],["Money without a purpose","usually gets spent."]],
+      [6.2,13,["Give it a name","and a date."],["A home by 2030. College by 2038.","Retirement by 2050."]],
+      [13,18.6,["Each goal gets","its own plan."],["Near goals stay safer. Far goals","can hold more equity."]],
+      [18.6,24,["Then it's one","SIP a month."],["We review every goal, so you","always know where you stand."]],
+    ],
+    pill:[[0.4,6.2,"#9FB0AA","Saving for","Someday"],[6.4,13,"#F5A524","Goals","3 named"],
+          [13.2,18.6,"#0E7C66","Plans","One per goal"],[18.8,24,"#0E7C66","All goals","On track"]],
+    build(L,U){
+      const {E,T,sprout}=U;
+      const cloud=E("g",{},L);
+      E("rect",{x:1170,y:420,width:440,height:320,rx:120,fill:"#F0F4F2",stroke:"#C9D6D1","stroke-width":4,"stroke-dasharray":"14 12"},cloud);
+      T("Someday",{x:1390,y:600,"text-anchor":"middle","font-size":44,"font-weight":600,fill:"#9FB0AA"},cloud);
+      const leaks=[...Array(7)].map(()=>E("circle",{r:18,fill:"#F5A524",stroke:"#E0901A","stroke-width":4},L));
+      const cards=GOALS.map(([ic,name,yr,f,eq],i)=>{
+        const y=280+i*190, g=E("g",{},L);
+        E("rect",{x:1080,y,width:680,height:160,rx:28,fill:"#fff",stroke:"#DDE5E2","stroke-width":3},g);
+        T(ic,{x:1120,y:y+68,"font-size":44},g);
+        T(name,{x:1190,y:y+62,"font-size":32,"font-weight":600,fill:"#13302A"},g);
+        T("Target "+yr,{x:1190,y:y+100,"font-size":24,fill:"#5B6B66"},g);
+        E("rect",{x:1120,y:y+122,width:400,height:14,rx:7,fill:"#F0F4F2"},g);
+        const bar=E("rect",{x:1120,y:y+122,width:0,height:14,rx:7,fill:"#0E7C66"},g);
+        const pct=T("",{x:1540,y:y+136,"font-size":24,"font-weight":600,fill:"#0E7C66"},g);
+        const mix=E("g",{opacity:0},g);
+        T("Equity "+eq+"%",{x:1720,y:y+62,"text-anchor":"end","font-size":24,"font-weight":500,fill:"#13302A"},mix);
+        E("rect",{x:1560,y:y+80,width:160,height:16,rx:8,fill:"#BFE3D9"},mix);
+        E("rect",{x:1560,y:y+80,width:160*eq/100,height:16,rx:8,fill:"#0E7C66"},mix);
+        return {g,bar,pct,mix,f,y}; });
+      const m=sprout(L);
+      return {cloud,leaks,cards,m};
+    },
+    draw(t,R,U){
+      const {ease,outBack,prog,lerp,set,win,clamp}=U;
+      set(R.cloud,{opacity:win(t,.6,6.4,.5,.4)});
+      R.leaks.forEach((c,i)=>{ const ph=((t-1.2)/2.4+i/7)%1, on=t>1.2&&t<6.2;
+        set(c,{cx:1300+i*28+ph*260, cy:620+Math.sin(i)*40+ph*260, opacity:on?Math.sin(Math.PI*ph)*(1-prog(t,5.8,6.2)):0}); });
+      R.cards.forEach((c,i)=>{ const a=6.5+i*.35, p=ease(prog(t,a,a+.7));
+        set(c.g,{opacity:Math.min(p,1-prog(t,22.6,23)), transform:`translate(${lerp(120,0,p)} 0)`});
+        set(c.mix,{opacity:ease(prog(t,13.4+i*.3,14+i*.3))});
+        const fp=ease(prog(t,19+i*.3,20.6+i*.3))*c.f;
+        set(c.bar,{width:400*fp}); c.pct.textContent = t>19 ? Math.round(fp*100)+"%" : ""; });
+      const sit = t>18.8;
+      const mp = outBack(prog(t,18.8,19.6));
+      const x = sit ? lerp(1790,1720,mp) : 1790, y = sit ? lerp(860,262,mp) : 860;
+      set(R.m,{transform:`translate(${x} ${y+Math.sin(t*3)*5}) scale(${sit?.62:.7})`, opacity:Math.min(prog(t,.6,1.1),1-prog(t,22.6,23))});
+    }
+  };
+
+  /* ===== Film 4: Start early ===== */
+  const AX=a=>1060+(a-25)/35*740, BASE=880;
+  const corpus=(start,age)=>fv(5000,Math.max(0,(age-start)*12));
+  const A60=corpus(25,60), R60=corpus(35,60), MAXV=A60*1.04;
+  const AY=v=>BASE-v/MAXV*520;
+  const earlySpec = {
+    dur:24,
+    copy:[
+      [0.6,6.6,["Meet Asha","and Ravi."],["Both invest ₹5,000 a month","until they turn 60."]],
+      [6.6,13.2,["Asha starts at 25.","Ravi waits till 35."],["Ten years apart.","Same monthly amount."]],
+      [13.2,19.2,["Asha ends with","over 3x more."],["She invested ₹6 lakh more.","She ends up "+inr(A60-R60)+" ahead.*"]],
+      [19.2,25,["Your best day to","start is today."],[]],
+    ],
+    pill:[[0.4,6.6,"#0E7C66","Both invest","₹5,000 a month"],
+          [6.8,13.2,"#F5A524","Age",t=>Math.round(25+35*prog(t,7.4,12.8))],
+          [13.4,19.2,"#0E7C66","At 60, Asha vs Ravi",inr(A60)+" vs "+inr(R60)],
+          [19.4,25,"#F5A524","Best day to start","Today"]],
+    foot:[7,20.4,"*Illustration assumes 12% annual returns until age 60. Returns are not guaranteed."],
+    build(L,U){
+      const {E,T}=U;
+      const chart=E("g",{},L);
+      E("line",{x1:1040,y1:BASE,x2:1820,y2:BASE,stroke:"#C9D6D1","stroke-width":4,"stroke-linecap":"round"},chart);
+      [25,35,60].forEach(a=>T(a===25?"Age 25":a,{x:AX(a),y:BASE+44,"text-anchor":"middle","font-size":24,fill:"#5B6B66"},chart));
+      const aArea=E("path",{fill:"#0E7C66","fill-opacity":.10},chart), aLine=E("path",{fill:"none",stroke:"#0E7C66","stroke-width":7,"stroke-linecap":"round"},chart);
+      const rLine=E("path",{fill:"none",stroke:"#F5A524","stroke-width":7,"stroke-linecap":"round"},chart);
+      const aEnd=T(inr(A60),{x:AX(60)-44,y:AY(A60)+50,"text-anchor":"end","font-size":40,"font-weight":600,fill:"#0E7C66"},chart);
+      const rEnd=T(inr(R60),{x:AX(60)-44,y:AY(R60)+50,"text-anchor":"end","font-size":34,"font-weight":600,fill:"#D98A0B"},chart);
+      const av=(c,l,n)=>{ const g=E("g",{},L); E("circle",{r:40,fill:c},g);
+        T(l,{y:14,"text-anchor":"middle","font-size":40,"font-weight":600,fill:"#fff"},g);
+        const name=T(n,{y:90,"text-anchor":"middle","font-size":30,"font-weight":500,fill:"#13302A"},g); return {g,name}; };
+      return {chart,aArea,aLine,rLine,aEnd,rEnd,A:av("#0E7C66","A","Asha"),R:av("#F5A524","R","Ravi")};
+    },
+    draw(t,R,U){
+      const {ease,outBack,prog,lerp,set}=U;
+      const age = 25+35*ease(prog(t,7.4,12.8));
+      set(R.chart,{opacity:Math.min(ease(prog(t,6.6,7.2)),1-prog(t,22.6,23))});
+      const path=(start)=>{ let d=""; for(let a=start;a<=age+1e-6;a+=.25){ d+=(d?"L":"M")+AX(a).toFixed(1)+" "+AY(corpus(start,a)).toFixed(1); } return d; };
+      const ad=path(25); set(R.aLine,{d:ad}); set(R.aArea,{d: ad ? ad+`L${AX(age)} ${BASE}L${AX(25)} ${BASE}Z` : ""});
+      set(R.rLine,{d: age>35 ? path(35) : ""});
+      set(R.aEnd,{opacity:ease(prog(t,13,13.6))}); set(R.rEnd,{opacity:ease(prog(t,13.3,13.9))});
+      const intro = ease(prog(t,6.6,7.3));
+      const ax = lerp(1280,AX(Math.min(age,60)),intro), ay = lerp(600,AY(corpus(25,age))-56,intro);
+      const rAge = Math.max(35,age);
+      const rx = lerp(1560,AX(rAge),intro), ry = lerp(600, (age<35?BASE:AY(corpus(35,rAge)))-56,intro);
+      const s = lerp(1,.62,intro), pin = outBack(prog(t,.8,1.5)), pin2 = outBack(prog(t,1.1,1.8));
+      const out = 1-prog(t,22.6,23);
+      set(R.A.g,{transform:`translate(${ax} ${ay}) scale(${s*pin})`,opacity:out});
+      set(R.R.g,{transform:`translate(${rx} ${ry}) scale(${s*pin2})`,opacity:out});
+      set(R.A.name,{opacity:1-intro}); set(R.R.name,{opacity:1-intro});
+    }
+  };
+
+  /* ===== Film 5: Markets fall, SIPs keep buying ===== */
+  const PRICES=[100,85,70,60,72,88,105,120];
+  const UNITS=PRICES.map(p=>5000/p);
+  const AVG_MKT=PRICES.reduce((a,b)=>a+b)/PRICES.length;
+  const AVG_COST=5000*PRICES.length/UNITS.reduce((a,b)=>a+b);
+  const MX=i=>1110+i*95, PY=p=>580-(p-60)*4;
+  const dipSpec = {
+    dur:24,
+    copy:[
+      [0.6,6.2,["Markets go up","and down."],["Short-term falls are normal,","even for good funds."]],
+      [6.2,13.2,["Your SIP buys","more on dips."],["Same ₹5,000 every month.","More units when prices dip."]],
+      [13.2,18.8,["That lowers your","average cost."],["It's called rupee cost averaging."]],
+      [18.8,25,["So stay","the course."],["The plan works when you stick","with it. We help you do that."]],
+    ],
+    pill:[[0.4,6.2,"#E5484D","Markets","Up and down"],
+          [6.4,13.2,"#0E7C66",t=>"Month "+(1+Math.min(7,Math.floor(Math.max(0,t-6.6)/.75))),t=>Math.round(UNITS[Math.min(7,Math.floor(Math.max(0,t-6.6)/.75))])+" units"],
+          [13.4,18.8,"#0E7C66","Your average cost","₹"+Math.round(AVG_COST)+" a unit"],
+          [19,25,"#F5A524","The plan","Stay invested"]],
+    foot:[1,20.4,"Illustrative prices, not a real fund."],
+    build(L,U){
+      const {E,T,sprout}=U;
+      const g=E("g",{},L);
+      T("Price per unit",{x:1060,y:310,"font-size":24,fill:"#5B6B66"},g);
+      const line=E("path",{fill:"none",stroke:"#13302A","stroke-width":6,"stroke-linecap":"round","stroke-linejoin":"round"},g);
+      const dots=PRICES.map((p,i)=>E("circle",{cx:MX(i),cy:PY(p),r:9,fill:"#13302A"},g));
+      const plab=PRICES.map((p,i)=>T("₹"+p,{x:MX(i),y:PY(p)-24,"text-anchor":"middle","font-size":22,"font-weight":500,fill:"#5B6B66"},g));
+      E("line",{x1:1060,y1:900,x2:1820,y2:900,stroke:"#C9D6D1","stroke-width":4,"stroke-linecap":"round"},g);
+      const ulab=T("Units your ₹5,000 buys",{x:1060,y:950,"font-size":24,fill:"#5B6B66"},g);
+      const bars=UNITS.map((u,i)=>E("rect",{x:MX(i)-28,width:56,rx:10,fill:"#0E7C66"},g));
+      const bl=UNITS.map((u,i)=>T(Math.round(u),{x:MX(i),"text-anchor":"middle","font-size":24,"font-weight":600,fill:"#0E7C66"},g));
+      const cmp=E("g",{},L);
+      E("rect",{x:1060,y:150,width:360,height:130,rx:28,fill:"#fff",stroke:"#DDE5E2","stroke-width":3},cmp);
+      T("Average market price",{x:1094,y:198,"font-size":24,fill:"#5B6B66"},cmp);
+      T("₹"+Math.round(AVG_MKT),{x:1094,y:256,"font-size":46,"font-weight":600,fill:"#13302A"},cmp);
+      E("rect",{x:1440,y:150,width:370,height:130,rx:28,fill:"#13302A"},cmp);
+      T("Your average cost",{x:1474,y:198,"font-size":24,fill:"#BFE3D9"},cmp);
+      T("₹"+Math.round(AVG_COST),{x:1474,y:256,"font-size":46,"font-weight":600,fill:"#fff"},cmp);
+      const m=sprout(L);
+      return {g,line,dots,plab,bars,bl,cmp,m};
+    },
+    draw(t,R,U){
+      const {ease,outBack,prog,lerp,set}=U;
+      set(R.g,{opacity:Math.min(ease(prog(t,.6,1.1)),1-prog(t,22.6,23))});
+      const lp=ease(prog(t,1,5.2))*7; let d="";
+      for(let x=0;x<=lp+1e-6;x+=.05){ const i=Math.min(6,Math.floor(x)), f=x-i;
+        const p=lerp(PRICES[i],PRICES[i+1]??PRICES[i],f); d+=(d?"L":"M")+lerp(MX(i),MX(i+1),f).toFixed(1)+" "+PY(p).toFixed(1); }
+      set(R.line,{d});
+      R.dots.forEach((c,i)=>set(c,{opacity:lp>=i-.01?1:0}));
+      const cmpOn = t>13.2 && t<18.9;
+      R.plab.forEach((l,i)=>set(l,{opacity:(lp>=i-.01?1:0)*(cmpOn?0:1)}));
+      R.bars.forEach((b,i)=>{ const a=6.6+i*.75, p=outBack(prog(t,a,a+.5)), h=UNITS[i]*3.1*Math.max(0,p);
+        set(b,{y:900-h,height:h,fill: PRICES[i]<80?"#1A9A7F":"#0E7C66"}); set(R.bl[i],{y:900-h-14,opacity:prog(t,a+.3,a+.5)}); });
+      set(R.cmp,{opacity:Math.min(ease(prog(t,13.6,14.2)),1-ease(prog(t,18.4,18.9))), transform:`translate(0 ${lerp(24,0,ease(prog(t,13.6,14.2)))})`});
+      // sprout rides the price line
+      const x=Math.min(7,lp), i=Math.min(6,Math.floor(x)), f=x-i, price=lerp(PRICES[i],PRICES[i+1]??PRICES[i],f);
+      const mx=lerp(MX(i),MX(Math.min(7,i+1)),f), my=PY(price)-62;
+      const end = ease(prog(t,19,19.8));
+      set(R.m,{transform:`translate(${lerp(mx,1700,end)} ${lerp(my,PY(120)-110,end)-Math.abs(Math.sin(t*5))*6}) scale(${lerp(.45,.7,end)})`,
+        opacity:Math.min(prog(t,1,1.3),1-prog(t,22.6,23),1-ease(prog(t,13.2,13.6))+ease(prog(t,18.6,19)))});
+      set(R.line,{opacity:cmpOn?.3:1}); R.dots.forEach(c=>c.style.opacity=cmpOn?.3:"");
+    }
+  };
+
+  return {make, specs:{funds:fundsSpec, goals:goalsSpec, early:earlySpec, dip:dipSpec}};
+})();
+
+/* ---------- film reel ---------- */
+(function(){
+  const reel=document.getElementById('reel'), cards=[...reel.querySelectorAll('.fcard')];
+  const keys=['funds','goals','early','dip'];
+  const films=[HWFilm1, ...keys.map((k,i)=>HWFilms.make(cards[i+1].querySelector('svg'), HWFilms.specs[k]))];
+  const POSTER=[2.5,4,8,9.5,10];
+  const reduce=matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const st=films.map((f,i)=>({t:POSTER[i],playing:false}));
+  films.forEach((f,i)=>f.render(st[i].t));
+  let active=0, inView=false, last=performance.now(), userPaused=false;
+  const dots=document.getElementById('reel-dots');
+  cards.forEach((c,i)=>{ const b=document.createElement('button'); b.type='button'; b.setAttribute('aria-label','Film '+(i+1)); b.onclick=()=>go(i); dots.appendChild(b); });
+  const dotEls=[...dots.children];
+  function go(i){ i=(i+cards.length)%cards.length; reel.scrollTo({left:cards[i].offsetLeft-cards[0].offsetLeft,behavior:'smooth'}); }
+  document.getElementById('reel-prev').onclick=()=>go(active-1);
+  document.getElementById('reel-next').onclick=()=>go(active+1);
+  function setActive(i){
+    if(i===active && cards[i].classList.contains('on')) return;
+    st.forEach((s,k)=>{ if(k!==i){ s.playing=false; } });
+    active=i; cards.forEach((c,k)=>c.classList.toggle('on',k===i)); dotEls.forEach((d,k)=>d.classList.toggle('on',k===i));
+    st[i].t=0; st[i].playing = inView && !reduce && !userPaused;
+    sync();
+  }
+  function sync(){ cards.forEach((c,k)=>c.classList.toggle('playing',st[k].playing)); }
+  reel.addEventListener('scroll',()=>{ const x=reel.scrollLeft; let best=0,bd=1e9;
+    cards.forEach((c,k)=>{ const d=Math.abs(c.offsetLeft-cards[0].offsetLeft-x); if(d<bd){bd=d;best=k;} }); setActive(best); },{passive:true});
+  cards.forEach((c,k)=>c.querySelector('.fplay').onclick=()=>{
+    if(k!==active){ go(k); return; }
+    st[k].playing=!st[k].playing; userPaused=!st[k].playing; sync(); });
+  new IntersectionObserver(es=>es.forEach(e=>{ inView=e.isIntersecting;
+    if(!inView){ st.forEach(s=>s.playing=false); } else if(!reduce && !userPaused){ st[active].playing=true; }
+    sync(); }),{threshold:.35}).observe(reel);
+  setActive(0); cards[0].classList.add('on'); dotEls[0].classList.add('on');
+  function frame(now){ const dt=Math.min(.1,(now-last)/1000); last=now;
+    st.forEach((s,k)=>{ if(!s.playing) return; s.t+=dt;
+      if(s.t>=films[k].dur){ s.t=films[k].dur-.001; s.playing=false; sync(); films[k].render(s.t); if(inView) setTimeout(()=>go(k+1),600); }
+      else films[k].render(s.t);
+      cards[k].querySelector('.fbar i').style.width=(s.t/films[k].dur*100)+'%'; });
+    requestAnimationFrame(frame); }
+  requestAnimationFrame(frame);
+  window.HWAll=films;
+})();
+
+/* ---------- meet sprout + closer ---------- */
+(function(){
+  const g=id=>document.getElementById(id);
+  const stage=g('pg-stage'), bubble=g('pg-bubble'), fx=g('pg-fx'), root=g('pg-root'), sq=g('pg-squash');
+  const eyes=g('pg-eyes'), blink=g('pg-blink'), shut=g('pg-shut'), smile=g('pg-smile'), open=g('pg-open'),
+        worry=g('pg-worry'), shades=g('pg-shades'), sweat=g('pg-sweat'), shadow=g('pg-shadow');
+  const reduce=matchMedia('(prefers-reduced-motion: reduce)').matches, NS='http://www.w3.org/2000/svg';
+  let busy=false, sleeping=false, bt;
+  const say=(txt,ms=2200)=>{ bubble.textContent=txt; bubble.classList.add('show'); clearTimeout(bt); bt=setTimeout(()=>bubble.classList.remove('show'),ms); };
+  const face=m=>{ smile.style.opacity=m==='smile'?1:0; open.style.opacity=m==='open'?1:0; worry.style.opacity=m==='worry'?1:0; };
+  const eyesShut=on=>{ shut.style.opacity=on?1:0; eyes.style.opacity=on?0:1; };
+  const A=(el,kf,opt)=>reduce?{finished:Promise.resolve()}:el.animate(kf,opt);
+  const wait=ms=>new Promise(r=>setTimeout(r,ms));
+  if(!reduce){
+    root.animate([{transform:'translateY(0)'},{transform:'translateY(-8px)'},{transform:'translateY(0)'}],{duration:2600,iterations:Infinity,easing:'ease-in-out'});
+    setInterval(()=>{ if(!sleeping) blink.animate([{transform:'scaleY(1)'},{transform:'scaleY(.1)'},{transform:'scaleY(1)'}],{duration:160}); },3400);
+  }
+  // gaze: eyes follow the cursor smoothly; the mouth moves with them so they never touch
+  let gx=0, gy=0, cxp=0, cyp=0;
+  addEventListener('pointermove',e=>{ if(sleeping) return;
+    const r=stage.getBoundingClientRect(), cx=r.left+r.width/2, cy=r.top+r.height*.62;
+    const dx=e.clientX-cx, dy=e.clientY-cy, d=Math.hypot(dx,dy)||1, k=Math.min(7,d/35);
+    gx=dx/d*k; gy=dy/d*k; },{passive:true});
+  (function loop(){
+    cxp+=(gx-cxp)*.16; cyp+=(gy-cyp)*.16;
+    const ey=Math.max(-6,Math.min(3.5,cyp));
+    const mx=cxp*.55, my=Math.max(-2,cyp*.85);
+    eyes.setAttribute('transform',`translate(${cxp.toFixed(2)} ${ey.toFixed(2)})`);
+    smile.setAttribute('transform',`translate(${mx.toFixed(2)} ${my.toFixed(2)})`);
+    open.setAttribute('transform',`translate(${mx.toFixed(2)} ${my.toFixed(2)})`);
+    requestAnimationFrame(loop); })();
+  const burst=(n,make)=>{ for(let i=0;i<n;i++){ const el=make(i); fx.appendChild(el); setTimeout(()=>el.remove(),2400);} };
+  const acts={
+    async poke(){ say('Hey, that tickles!'); eyesShut(true); face('open');
+      await A(sq,[{transform:'scale(1,1)'},{transform:'scale(1.16,.84)'},{transform:'scale(.92,1.1)'},{transform:'scale(1.04,.97)'},{transform:'scale(1,1)'}],{duration:650,easing:'ease-out'}).finished;
+      eyesShut(false); face('smile'); },
+    async up(){ say('Markets up. Staying cool.',2600); shades.style.opacity=1;
+      A(shades,[{transform:'translateY(-60px)',opacity:0},{transform:'translateY(4px)',opacity:1},{transform:'translateY(0)'}],{duration:500,easing:'ease-out'});
+      await A(root,[{transform:'translateY(0)'},{transform:'translateY(-30px)'},{transform:'translateY(0)'}],{duration:500,easing:'ease-out'}).finished;
+      await wait(2200); await A(shades,[{opacity:1},{opacity:0,transform:'translateY(-20px)'}],{duration:300}).finished; shades.style.opacity=0; },
+    async dip(){ say('Dips happen. My SIP keeps buying.',2800); face('worry'); sweat.style.opacity=1;
+      A(sweat,[{transform:'translateY(0)',opacity:1},{transform:'translateY(36px)',opacity:0}],{duration:1100,iterations:2});
+      await A(sq,[0,1,2,3,4,5,6,7,8].map(i=>({transform:`translateX(${i%2?-4:4}px)`})),{duration:700}).finished;
+      await wait(1500); sweat.style.opacity=0; face('smile'); },
+    async sip(){ say('₹5,000 invested. Yum.'); face('open');
+      burst(6,i=>{ const c=document.createElementNS(NS,'g');
+        c.innerHTML='<circle r="16" fill="#F5A524" stroke="#E0901A" stroke-width="3"/><text y="6" text-anchor="middle" font-size="17" font-weight="600" fill="#9A5A06">₹</text>';
+        c.animate([{transform:`translate(${(i-2.5)*40}px,-250px)`,opacity:0},{opacity:1,offset:.2},{transform:'translate(0px,-10px)',opacity:1,offset:.85},{transform:'translate(0px,0px)',opacity:0}],
+          {duration:900,delay:i*130,easing:'ease-in',fill:'both'}); return c; });
+      await wait(900);
+      for(let i=0;i<3;i++) await A(sq,[{transform:'scale(1)'},{transform:'scale(1.08,.94)'},{transform:'scale(1)'}],{duration:240}).finished;
+      face('smile'); },
+    async review(){ say('Portfolio reviewed. All on track.',2600);
+      await A(root,[{transform:'translateY(0) rotate(0)'},{transform:'translateY(-40px) rotate(180deg)',offset:.5},{transform:'translateY(0) rotate(360deg)'}],{duration:900,easing:'ease-in-out'}).finished;
+      await A(sq,[{transform:'scale(1)'},{transform:'scale(1.1,.9)'},{transform:'scale(1)'}],{duration:280}).finished; },
+    async goal(){ say('Goal reached!',2400); face('open');
+      const cols=['#0E7C66','#F5A524','#1A9A7F','#E5484D','#7CC4F0','#BFE3D9'];
+      burst(30,i=>{ const r=document.createElementNS(NS,'rect'); r.setAttribute('width',10); r.setAttribute('height',16); r.setAttribute('rx',3);
+        r.setAttribute('fill',cols[i%cols.length]); const a=Math.random()*Math.PI*2, d=160+Math.random()*140;
+        r.animate([{transform:'translate(0px,-60px)',opacity:1},{transform:`translate(${Math.cos(a)*d}px,${Math.sin(a)*d*.6-90}px) rotate(${Math.random()*720}deg)`,opacity:1,offset:.6},
+          {transform:`translate(${Math.cos(a)*d}px,${Math.sin(a)*d*.6+60}px) rotate(${Math.random()*900}deg)`,opacity:0}],{duration:1900,easing:'cubic-bezier(.2,.8,.3,1)',fill:'both'}); return r; });
+      await A(root,[{transform:'translateY(0)'},{transform:'translateY(-110px) rotate(-8deg)',offset:.45},{transform:'translateY(0) rotate(0)',offset:.8},{transform:'translateY(0)'}],{duration:800,easing:'ease-out'}).finished;
+      await A(sq,[{transform:'scale(1)'},{transform:'scale(1.15,.85)'},{transform:'scale(1)'}],{duration:300}).finished; face('smile'); },
+    async bed(){ say('Compounding while I sleep.',3200); sleeping=true; stage.classList.add('night'); eyesShut(true);
+      burst(3,i=>{ const z=document.createElementNS(NS,'text'); z.textContent='z'; z.setAttribute('font-size',34+i*8); z.setAttribute('font-weight',600); z.setAttribute('fill','#BFE3D9');
+        z.animate([{transform:'translate(70px,-80px)',opacity:0},{opacity:1,offset:.3},{transform:'translate(130px,-210px)',opacity:0}],{duration:2000,delay:i*600,fill:'both'}); return z; });
+      await wait(3400); stage.classList.remove('night'); eyesShut(false); sleeping=false; say('Good morning!',1400); },
+  };
+  async function run(k){ if(busy) return; busy=true; try{ await acts[k](); } finally{ busy=false; } }
+  document.querySelectorAll('.react button').forEach(b=>b.onclick=()=>run(b.dataset.act));
+  stage.addEventListener('click',()=>run('poke'));
+
+  // closer: Sprout's bedtime clock shows the visitor's real time
+  const bt2=g('bed-time');
+  const tick=()=>{ const d=new Date(); let h=d.getHours()%12||12; bt2.textContent=`it's ${h}:${String(d.getMinutes()).padStart(2,'0')}…`; };
+  tick(); setInterval(tick,30000);
+})();
+
+
+/* hero: typewriter goals */
+(function(){ const box=document.querySelector('.typer'); if(!box) return;
+  const tw=box.querySelector('.tw'); const words=["your child's future 🎓","your first home 🏡","a family wedding 💍","a calm retirement 🌴"].map(w=>Array.from(w));
+  const fit=()=>{ const t=document.createElement('span'); t.style.cssText='position:absolute;visibility:hidden;white-space:nowrap;font:inherit;font-weight:600';
+    box.appendChild(t); let w=0; words.forEach(x=>{ t.textContent=x.join(''); w=Math.max(w,t.getBoundingClientRect().width); }); t.remove(); box.style.width=Math.ceil(w+6)+'px'; };
+  fit(); document.fonts&&document.fonts.ready.then(fit); addEventListener('resize',fit);
+  if(matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+  let wi=0, ci=words[0].length, del=false;
+  (function step(){ const w=words[wi];
+    if(!del){ ci++; tw.textContent=w.slice(0,ci).join(''); if(ci>=w.length){ del=true; return setTimeout(step,1800); } return setTimeout(step,70); }
+    ci--; tw.textContent=w.slice(0,ci).join(''); if(ci<=0){ del=false; wi=(wi+1)%words.length; return setTimeout(step,350); } setTimeout(step,35); })();
+  // start by deleting the first word after a pause
+  del=true; ci=words[0].length;
+})();
+
+/* closer: Sprout gets sleepy, the lamp turns itself off and on, click = poke */
+(function(){ const sc=document.getElementById('bedscene'); if(!sc) return;
+  const $=id=>document.getElementById(id), open=$('bs-open'), shut=$('bs-shut'), yawn=$('bs-yawn'), smile=$('bs-smile'),
+        body=$('bs-body'), st=$('bed-status'), glow=$('bed-glow');
+  const reduce=matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const wait=ms=>new Promise(r=>setTimeout(r,ms));
+  let token=0, poking=false, cur='';
+  const say=t=>{ if(t===cur) return; cur=t; st.classList.add('fade');
+    setTimeout(()=>{ st.textContent=t; st.classList.remove('fade'); },450); };
+  const eyes=(mode)=>{ // 'open' | 'drowsy' | 'shut'
+    open.setAttribute('opacity',mode==='shut'?0:1); shut.setAttribute('opacity',mode==='shut'?1:0);
+    open.style.transform= mode==='drowsy' ? 'scaleY(.45)' : 'scaleY(1)'; open.style.transition='transform .6s'; };
+  const lamp=on=>{ sc.classList.toggle('off',!on); };
+  const sleep=on=>{ sc.classList.toggle('asleep',on); };
+  let firstNight=true;
+  // start every visit asleep, then he 'notices' the visitor and wakes up
+  eyes('shut'); lamp(false); sleep(true); st.textContent='compounding while I sleep'; cur='compounding while I sleep';
+  const P=3000; // every line stays on screen for the same time
+  const blink=()=>{ if(!reduce) open.animate([{transform:'scaleY(1)'},{transform:'scaleY(.1)'},{transform:'scaleY(1)'}],{duration:220}); };
+  async function cycle(){ const me=++token; const alive=()=>me===token;
+    const phase=async(text,steps)=>{ const t0=performance.now(); say(text);
+      for(const [at,fn] of steps){ const d=t0+at-performance.now(); if(d>0) await wait(d); if(!alive()) return false; fn(); }
+      const rest=t0+P-performance.now(); if(rest>0) await wait(rest); return alive(); };
+    const wake=(line)=>phase(line,[[0,()=>{sleep(false);eyes('drowsy');}],[400,()=>lamp(true)],[900,()=>eyes('open')],[1800,blink],[2500,blink]]);
+    if(firstNight){ firstNight=false;
+      if(!await phase('compounding while I sleep',[[0,()=>{eyes('shut');lamp(false);sleep(true);}]])) return;
+      if(!await wake('oh, hi! up late too?')) return;
+    } else {
+      if(!await wake('still awake…')) return;
+    }
+    while(alive()){
+      if(!await phase('getting sleepy…',[[0,()=>eyes('drowsy')],[700,()=>{ smile.setAttribute('opacity',0); yawn.setAttribute('opacity',1);
+          if(!reduce) yawn.animate([{transform:'scale(.4)'},{transform:'scale(1.15)'},{transform:'scale(1)'}],{duration:800,transformOrigin:'center'}); }],
+          [1700,()=>{ yawn.setAttribute('opacity',0); smile.setAttribute('opacity',1); }]])) return;
+      if(!await phase('compounding while I sleep',[[0,()=>{eyes('shut');sleep(true);}],[400,()=>lamp(false)]])) return;
+      if(!await wake('still awake…')) return;
+    } }
+  async function poke(){ if(poking) return; poking=true; token++;
+    lamp(true); sleep(false); eyes('open'); say('hey! that tickles');
+    if(!reduce){ body.animate([{transform:'scale(1,1)'},{transform:'scale(1.16,.84)'},{transform:'scale(.92,1.1)'},{transform:'scale(1.04,.97)'},{transform:'scale(1,1)'}],{duration:650,easing:'ease-out'});
+      open.animate([{transform:'scaleY(1)'},{transform:'scaleY(1.25)'},{transform:'scaleY(1)'}],{duration:400}); }
+    await wait(1800); poking=false; cycle(); }
+  const sp=$('bed-sprout'); sp.addEventListener('click',e=>{ poke(); if(e.detail) sp.blur(); }); sp.addEventListener('mousedown',e=>e.preventDefault());
+  sp.setAttribute('role','button'); sp.setAttribute('tabindex','0'); sp.setAttribute('aria-label','Poke Sprout');
+  sp.addEventListener('keydown',e=>{ if(e.key==='Enter'||e.key===' '){ e.preventDefault(); poke(); } });
+  sc.closest('.scene').removeAttribute('aria-hidden');
+  // run only while visible
+  new IntersectionObserver(es=>es.forEach(e=>{ if(e.isIntersecting && !sc.closest('.scene').classList.contains('is-day')){ if(!poking) cycle(); } else token++; }),{threshold:.2}).observe(sc.closest('.scene'));
+})();
+
+/* closer: 12-hour themes. Day (7am-7pm): Sprout waters his money plant. Night: the sleepy bedroom. */
+(function(){ const scene=document.querySelector('.scene'), dsc=document.getElementById('dayscene'); if(!scene||!dsc) return;
+  const q=new URLSearchParams(location.search).get('theme');
+  const isDay=()=>{ if(q==='day') return true; if(q==='night') return false; const h=new Date().getHours(); return h>=7&&h<19; };
+  const fmt=d=>{ let h=d.getHours(), m=String(d.getMinutes()).padStart(2,'0'); const ap=h>=12?'pm':'am'; h=h%12||12; return `it's ${h}:${m} ${ap}…`; };
+  const $=id=>document.getElementById(id), st=$('day-status'), tm=$('day-time');
+  const reduce=matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const wait=ms=>new Promise(r=>setTimeout(r,ms));
+  let cur='', token=0, busy=false, grown=0, jar=0;
+  const SW=220; // text swap time
+  const say=t=>{ if(t===cur) return; cur=t; st.classList.add('fade'); setTimeout(()=>{ st.textContent=t; st.classList.remove('fade'); },SW); };
+  const A=(el,kf,o)=>reduce?{finished:Promise.resolve()}:el.animate(kf,o);
+  function applyTheme(){ scene.classList.toggle('is-day',isDay()); tm.textContent=fmt(new Date()); }
+  applyTheme(); setInterval(applyTheme,60000);
+  const leaves=[...dsc.querySelectorAll('.mp-leaf')], coins=[...dsc.querySelectorAll('.mp-coin')], drops=[...dsc.querySelectorAll('.drop')];
+  const fly=$('fly'), jf=$('jar-fill'), stem=$('mp-stem');
+  const coinXY=[[388,214],[334,186],[386,152]];
+  const bud=document.getElementById('mp-bud');
+  const TOTAL=stem.getTotalLength(); stem.style.strokeDasharray=TOTAL; stem.style.strokeDashoffset=TOTAL;
+  const LEAFY=[226,196,166,136];
+  const lenAtY=y=>{ let lo=0,hi=TOTAL; for(let k=0;k<30;k++){ const m=(lo+hi)/2; (stem.getPointAtLength(m).y>y)?lo=m:hi=m; } return (lo+hi)/2; };
+  const STOPS=LEAFY.map(y=>lenAtY(y-20));
+  const moveBud=(len,dur)=>{ const pt=stem.getPointAtLength(len); bud.setAttribute('opacity',1);
+    bud.style.transition=`transform ${dur}ms ease`; bud.style.transform=`translate(${pt.x}px,${pt.y}px)`; };
+  bud.removeAttribute('transform'); bud.style.transform='translate(360px,240px)';
+  function setGrowth(n){ const L=STOPS[Math.min(3,n)];
+    stem.style.transition='stroke-dashoffset .9s ease'; stem.style.strokeDashoffset=TOTAL-L; moveBud(L,900);
+    leaves.forEach((l,i)=>{ if(i<=n && l.style.opacity!=='1'){ l.style.opacity=1; A(l,[{transform:l.getAttribute('transform')+' scale(0)'},{transform:l.getAttribute('transform')+' scale(1.15)'},{transform:l.getAttribute('transform')}],{duration:500,delay:500,easing:'ease-out',fill:'backwards'}); } }); }
+  const P=3000; // every line stays for the same time, like the night scene
+  const pour=on=>dsc.classList.toggle('pour',on);
+  const dropsGo=()=>drops.forEach((d,i)=>{ const x=346+i*8; A(d,[{transform:`translate(${x}px,178px)`,opacity:0},{transform:`translate(${x-1}px,192px)`,opacity:1,offset:.2},{transform:`translate(${x-4}px,236px)`,opacity:.9,offset:.9},{transform:`translate(${x-4}px,240px)`,opacity:0}],{duration:650,delay:i*170,iterations:2,easing:'cubic-bezier(.5,0,.8,.6)'}); });
+  const popCoin=i=>{ const c=coins[i], pt=stem.getPointAtLength(STOPS[Math.min(3,i)]); coinXY[i]=[pt.x,pt.y-30]; c.setAttribute('transform',`translate(${pt.x} ${pt.y-30})`); const base=c.getAttribute('transform'); c.style.opacity=1;
+    A(c,[{transform:base+' scale(0)'},{transform:base+' scale(1.18)',offset:.7},{transform:base+' scale(1)'}],{duration:500,easing:'ease-out'}); };
+  const flyCoin=i=>{ const c=coins[i], [x,y]=coinXY[i]; c.style.opacity=0; fly.setAttribute('opacity',1);
+    const an=A(fly,[{transform:`translate(${x}px,${y}px) scale(1)`},{transform:`translate(${(x+480)/2}px,${Math.min(y,170)-46}px) scale(1.05)`,offset:.5},{transform:'translate(480px,212px) scale(.9)'}],{duration:850,easing:'cubic-bezier(.45,0,.35,1)',fill:'forwards'});
+    an.finished.then(()=>{ fly.setAttribute('opacity',0); jar=i+1; jf.style.transform=`scaleY(${jar/3})`; }); };
+  const resetNow=()=>{ jf.style.transform='scaleY(0)'; leaves.forEach(l=>{ l.style.transition='opacity .6s ease'; l.style.opacity=0; });
+    coins.forEach(c=>c.style.opacity=0); stem.style.transition='stroke-dashoffset .7s ease'; stem.style.strokeDashoffset=TOTAL; moveBud(0.01,700); grown=0; jar=0; };
+  const ROUND=[['watering my money plant','a little, whenever you can…'],['watering my money plant','it keeps adding up…'],['one more for luck','almost there…']];
+  async function cycle(){ const me=++token, alive=()=>me===token&&scene.classList.contains('is-day');
+    const phase=async(text,steps)=>{ const t0=performance.now(); say(text);
+      for(const [at,fn] of steps){ const d=t0+SW+at-performance.now(); if(d>0) await wait(d); if(!alive()) return false; fn(); }
+      const rest=t0+P-performance.now(); if(rest>0) await wait(rest); return alive(); };
+    let first=true;
+    while(alive()){
+      for(let r=0;r<3;r++){
+        const [l1,l2]=ROUND[r];
+        const needReset = r===0 && !first;
+        const wSteps = needReset
+          ? [[0,resetNow],[800,()=>pour(true)],[1300,dropsGo],[2600,()=>pour(false)]]
+          : [[0,()=>pour(true)],[600,dropsGo],[2300,()=>pour(false)]];
+        if(!await phase(l1,wSteps)) return;
+        if(!await phase(l2,[[0,()=>{ setGrowth(grown); grown=Math.min(3,grown+1); }],[400,()=>popCoin(r)],[950,()=>flyCoin(r)]])) return;
+      }
+      // jar is full now: the message matches what you see
+      if(!await phase("that's how wealth grows 🌱",[[0,()=>{ setGrowth(3); A($('ds-body'),[{transform:'translateY(0)'},{transform:'translateY(-12px)'},{transform:'translateY(0)'}],{duration:550,easing:'ease-out'}); }]])) return;
+      first=false;
+    } }
+  async function poke(){ if(busy) return; busy=true; const prev=cur;
+    say("hey! I'm busy compounding");
+    A($('ds-body'),[{transform:'scale(1,1)'},{transform:'scale(1.14,.86)'},{transform:'scale(.93,1.08)'},{transform:'scale(1,1)'}],{duration:600,easing:'ease-out'});
+    await wait(1900); busy=false; if(cur==="hey! I'm busy compounding") say(prev); }
+  const sp=$('day-sprout'); sp.setAttribute('role','button'); sp.setAttribute('tabindex','0'); sp.setAttribute('aria-label','Poke Sprout');
+  sp.addEventListener('mousedown',e=>e.preventDefault()); sp.addEventListener('click',poke);
+  sp.addEventListener('keydown',e=>{ if(e.key==='Enter'||e.key===' '){ e.preventDefault(); poke(); } });
+  let started=false;
+  new IntersectionObserver(es=>es.forEach(e=>{ if(e.isIntersecting && scene.classList.contains('is-day') && !started){ started=true; cycle(); } }),{threshold:.2}).observe(scene);
+})();
+/* ---------- page ---------- */
+(function(){
+  const q=s=>document.querySelector(s), qa=s=>[...document.querySelectorAll(s)];
+  const inr=v=>{ if(v>=1e7) return '₹'+(v/1e7).toFixed(2)+' Cr'; if(v>=1e5) return '₹'+(v/1e5).toFixed(1)+' L'; return '₹'+Math.round(v).toLocaleString('en-IN'); };
+
+  // header border
+  addEventListener('scroll',()=>q('#hw-bar').classList.toggle('scrolled',scrollY>10),{passive:true});
+
+  // notch: only appears while the six-step story is on screen
+  const notch=q('#hw-notch'), lbl=q('#hw-lbl'), val=q('#hw-val'), proc=q('#process');
+  function setNotch(c,l,v){ val.style.opacity=0; setTimeout(()=>{ val.textContent=v; val.style.opacity=1; },160); }
+  new IntersectionObserver(es=>es.forEach(e=>{ notch.classList.toggle('show',e.isIntersecting); if(!e.isIntersecting) notch.classList.remove('open'); }),
+    {rootMargin:'-40% 0px -40% 0px'}).observe(proc);
+  const open=()=>notch.classList.add('open'), close=()=>notch.classList.remove('open');
+  notch.addEventListener('mouseenter',open); notch.addEventListener('mouseleave',close);
+  notch.addEventListener('focusin',open); notch.addEventListener('focusout',e=>{ if(!notch.contains(e.relatedTarget)) close(); });
+
+  // goal board: fill bars + ring when visible, drag cards inside the canvas
+  const canvas=q('#hw-canvas'), anno=q('#hw-anno');
+  new IntersectionObserver((es,o)=>es.forEach(e=>{ if(!e.isIntersecting) return;
+    qa('.goal .fill').forEach((f,i)=>setTimeout(()=>f.style.width=f.dataset.w+'%',i*180));
+    setTimeout(()=>q('#hw-ring').style.strokeDashoffset=113.1*(1-.23),300); o.disconnect(); }),{threshold:.35}).observe(q('#hw-board'));
+  let z=10;
+  qa('.goal').forEach(g=>{
+    let sx,sy,ox,oy;
+    g.addEventListener('pointerdown',e=>{ if(innerWidth<=900) return;
+      g.setPointerCapture(e.pointerId); g.classList.add('dragging'); g.style.zIndex=++z;
+      sx=e.clientX; sy=e.clientY; ox=g.offsetLeft; oy=g.offsetTop; anno.classList.add('gone'); });
+    g.addEventListener('pointermove',e=>{ if(!g.classList.contains('dragging')) return;
+      const maxX=canvas.clientWidth-g.offsetWidth-8, maxY=canvas.clientHeight-g.offsetHeight-8;
+      g.style.left=Math.max(8,Math.min(maxX,ox+e.clientX-sx))+'px'; g.style.top=Math.max(8,Math.min(maxY,oy+e.clientY-sy))+'px'; });
+    const end=()=>g.classList.remove('dragging');
+    g.addEventListener('pointerup',end); g.addEventListener('pointercancel',end);
+  });
+
+  // sticky process story
+  const views=qa('.view'), steps=qa('.step');
+  const so=new IntersectionObserver(es=>es.forEach(e=>{ if(!e.isIntersecting) return;
+    const i=+e.target.dataset.s;
+    steps.forEach(s=>s.classList.toggle('on',s===e.target));
+    views.forEach(v=>v.classList.toggle('on',+v.dataset.v===i));
+    setNotch('#0E7C66','How it works','Step '+(i+1)+' of 6');
+  }),{rootMargin:'-45% 0px -45% 0px'});
+  steps.forEach(s=>so.observe(s));
+
+  // calculator
+  const amt=q('#c-amt'), yrs=q('#c-yrs'), ret=q('#c-ret');
+  function calc(){
+    const P=+amt.value, n=+yrs.value, r=+ret.value/1200;
+    const fv=m=>P*((Math.pow(1+r,m)-1)/r)*(1+r);
+    const total=fv(n*12), inv=P*n*12;
+    q('#o-amt').textContent=inr(P); q('#o-yrs').textContent=n+(n>1?' years':' year'); q('#o-ret').textContent=ret.value+'%';
+    q('#r-val').textContent=inr(total); q('#r-inv').textContent=inr(inv); q('#r-gain').textContent=inr(total-inv);
+    const box=q('#r-bars'); box.innerHTML='';
+    for(let y=1;y<=n;y++){ const v=fv(y*12), iv=P*y*12;
+      const b=document.createElement('div'); b.className='cbar'; b.style.height=(v/total*100)+'%';
+      b.innerHTML=`<i style="height:${iv/v*100}%"></i><u style="height:${(1-iv/v)*100}%"></u>`; box.appendChild(b); }
+  }
+  [amt,yrs,ret].forEach(i=>i.addEventListener('input',calc)); calc();
+
+  // AMC logos (served from the existing site)
+  const logos=['AMC-Partners-1-1','AMC-Partners-2-1'].concat(Array.from({length:16},(_,i)=>'AMC-Partners-'+(i+1)));
+  const track=q('#hw-amc');
+  [...logos,...logos].forEach(n=>{ const im=new Image(); im.alt=''; im.loading='lazy';
+    im.src='https://happywealth.in/wp-content/uploads/2025/12/'+n+'.png'; im.onerror=()=>im.remove(); track.appendChild(im); });
+
+  // form (connect to your existing contact handler)
+  q('#f-send').onclick=()=>{ q('#f-sent').style.display='block'; };
+})();
+</script>
+</body>
+</html>
